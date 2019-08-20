@@ -1,0 +1,9 @@
+html {
+    background: black;
+}
+
+#container {
+    background: white;
+    color: black;
+    margin: 3em;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+{%- set view = view(recurse=True,count=30,entry_type_not="sidebar") -%}
+
+<feed xmlns="http://www.w3.org/2005/Atom"
+    xmlns:fh="http://purl.org/syndication/history/1.0"
+    xmlns:at="http://purl.org/atompub/tombstones/1.0">
+
+    <title>{{"busybee: " ~ category.name if category.parent else category.name}}</title>
+    <subtitle>Art, music, comics, and more</subtitle>
+    <link href="{{ view.link(template='feed',absolute=True) }}" rel="self" />
+    <link href="{{ category.link(template='feed',absolute=True) }}" rel="current" />
+    <link href="https://busybee.superfeedr.com" rel="hub" />
+    {% if view.next %}
+    <link href="{{ view.next.first.archive('month','feed',category=category,absolute=True) }}" rel="prev-archive" />
+    {% endif %}
+    {% if view.previous %}
+    <link href="{{ view.previous.last.archive('month','feed',category=category,absolute=True) }}" rel="next-archive" />
+    {% endif %}
+    <link href="{{ category.link(absolute=True) }}" />
+    {% if request.args %}<fh:archive />{% endif %}
+    <id>tag:{{request.host}},{{template.last_modified.format('YYYY-MM-DD')}}:{{category.path or "_all"}}</id>
+    <updated>{{view(recurse=True).last_modified.isoformat()}}</updated>
+
+    {% for entry in view.entries(unauthorized=1 if not user else 0) %}
+    <entry>
+        {% if entry.authorized %}
+        <title>{{'🔏 ' if entry.private else ''}}{{entry.category.name + ": " if entry.category.name != category.name}}{{entry.title(markup=False, no_smartquotes=True)}}</title>
+        <link href="{{ entry.permalink(absolute=True) }}" rel="alternate" type="text/html" />
+        <published>{{entry.date.isoformat()}}</published>
+        <updated>{{entry.last_modified.isoformat()}}</updated>
+        <id>urn:uuid:{{entry.uuid}}</id>
+        <author><name>{{ entry.author if entry.author else "fluffy" }}</name></author>
+        <content type="html"><![CDATA[
+
+		{% if entry.private %}
+		<aside><i><mark>Note:</mark> This is a private entry, so please use discretion in linking to it or mentioning it publicly. Thanks!</i></aside>
+		{% endif %}
+
+            {%- include get_template('_feed_entry', entry) -%}
+            <p><a href="{{entry.link(absolute=True)}}#comments">comments</a></p>
+
+        ]]></content>
+        {% for cat in entry.category.breadcrumb -%}
+        <category term="{{cat.link(absolute=True)}}" label="{{cat.name}}" />
+        {% endfor %}
+        {% for tag in entry.tags %}
+        <category term="{{view(tag=tag).link(absolute=True)}}" label="{{tag}}" />
+        {% endfor %}
+
+        {% else %}
+        <title>🔏 Private entry [{{entry.title(always_show=True).split()|join(attribute=0)}}]</title>
+        <link href="{{ entry.permalink(absolute=True) }}" rel="alternate" type="text/html" />
+        <published>{{entry.date.isoformat()}}</published>
+        <updated>{{entry.last_modified.isoformat()}}</updated>
+        <id>urn:uuid:{{entry.uuid}}</id>
+        <author><name>{{ entry.author if entry.author else "fluffy" }}</name></author>
+        <content type="html">This entry has a restricted audience.</content>
+        {% endif %}
+
+    </entry>
+    {% endfor %}
+
+    {% for entry in view(before=view.first,after=view.last).deleted %}
+    <at:deleted-entry ref="urn:uuid:{{entry.uuid}}" when="{{entry.last_modified.isoformat()}}">
+        <link>{{entry.permalink(absolute=True)}}</link>
+    </at:deleted-entry>
+    {% endfor %}
+</feed>

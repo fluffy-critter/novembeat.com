@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}
+    <title>{{ category.name or "Novembeat"}}
+    {%- if view.tags -%}
+        , tagged {{','.join(view.tags)}}
+    {%- endif -%}
+    {%- if view.range %} | {{ view.range }}{% endif %}</title>
+{% endblock %}
+
+{% set content = view(entry_type_not='sidebar',count=20) %}
+
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="style.css" />
+{% endblock %}
+    <link rel="alternate" type="application/atom+xml" title="Atom feed" href="feed" />
+    <link rel="shortcut icon" href="{{ static('favicon.ico') }}" />
+    <link rel="icon" type="image/png" href="{{ static('favicon.png') }}" />
+{% block webmention %}
+    {% include '/_webmention.html' %}
+{% endblock %}
+
+
+    {% if category.parent %}
+    <link rel="up" href="{{category.parent.link}}" />
+    {% endif %}
+    {% if content.previous %}
+    <link rel="previous" href="{{content.previous.link}}" />
+    {% endif %}
+    {% if content.next %}
+    <link rel="next" href="{{content.next.link}}" />
+    {% endif %}
+
+    {% block scripthooks %}
+    {% endblock %}
+</head>
+
+<body id="{{ template.name }}">
+
+
+<div id="container">
+    <div class="top-hook"></div>
+
+    {% block banner %}
+    <div id="banner">
+        <h1>{{ category.name or "Novembeat" }}
+        {%- if view.tags %}
+            ({{view.tags|map('title')|join(', ')}})
+        {%- endif -%}
+        </h1>
+        {% if category.description %}
+        <div id="description">{{category.description}}</div>
+        {% endif %}
+    </div>
+    {% endblock %}
+
+    {% block navigation %}
+    <nav id="nav">
+        <h2>Navigation</h2>
+        <ul class="breadcrumb">
+            {% for cat in category.breadcrumb[:-1] %}
+            <li><a href="{{cat.link}}">{{cat.shortname or cat.name}}</a></li>
+            {% endfor %}
+            <li class="here">
+                {{category.name}} {% if view.range or view.tags %}(<a href="{{category.link}}">Latest entries</a>){% endif %}
+            </li>
+        </ul>
+
+        {% if category.subcats %}
+        <ul class="subcats">
+            {% for subcat in category.subcats %}
+            <li><a href="{{subcat.link}}">{{subcat.shortname or subcat.name}}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% set sidebar = get_view(category=category,entry_type='sidebar',order='title') %}
+        {% if sidebar.entries %}
+        <ul class="sidebar">
+            {% for entry in sidebar.entries %}
+            <li><a href="{{entry.link}}">{{entry.title}}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </nav>
+    {% endblock %}
+
+    {% block content %}
+    <div id="entries">
+
+        {% if content.older or content.newer %}
+        <div class="nav topnav">
+            {% if content.older %}
+            <span class="prev"><a href="{{content.older}}">{{ view.spec.date and content.older.range(month='MMMM YYYY',year='YYYY') or "Older" }}</a></span>
+            {% endif %}
+            &nbsp;
+            {% if content.newer %}
+            <span class="next"><a href="{{content.newer}}">{{ view.spec.date and content.newer.range(month='MMMM YYYY',year='YYYY') or "Newer" }}</a></span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% block entries %}
+
+        {% for entry in content.entries %}
+        <article class="entry h-entry{{' private' if entry.private else ''}}">
+            <div class="heading">
+                {% block heading scoped %}
+                <div class="top-hook"></div>
+                <h2><a href="{{entry.link}}" class="u-url p-name">{{'🔏 ' if entry.private else ''}}{{entry.title}}</a></h2>
+                <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
+                    <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
+                    <span class="time">{{entry.date.format('h:mm A')}}</span>
+                    <span class="ago">{{entry.date.humanize()}}</span></time>
+                    {% if entry.author %}
+                    by
+                    <span class="author">
+                        <a rel="author" href="{{entry.authorURL or '/'}}" class="p-author h-card">{{entry.author}}</a>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endblock %}
+            </div>
+
+            {% block entrytags scoped %}
+                <div class="tags">
+                {% if entry.tags %}Tags:
+                <ul class="tags">
+                    {% for tag in entry.tags %}
+                    <li><a rel="tag" href="{{view(tag=tag)}}">{{tag}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                </div>
+            {% endblock %}
+
+            <div class="content">
+                {% block entrybody scoped %}
+                {% if entry.body %}
+                <div class="body e-summary">
+                {{ entry.body(max_width=240,
+                    max_height=240,
+                    link=entry.link,
+                    resize="fill",
+                    count=1,
+                    prefix="index_",
+                    div_class="thumb") }}
+                </div>
+                {% endif %}
+
+                {% if entry.more %}
+                <a class="readmore" rel="self" href="{{ entry.link }}#more">Read more...</a>
+                {% endif %}
+
+                {% endblock %}
+            </div>
+        </article>
+        {% endfor %}
+        {% endblock %}
+
+        {% if content.older or content.newer %}
+        <div class="nav bottomnav">
+            {% if content.older %}
+            <span class="prev"><a href="{{content.older}}">{{ view.spec.date and content.older.range(month='MMMM YYYY',year='YYYY') or "Older" }}</a></span>
+            {% endif %}
+            &nbsp;
+            {% if content.newer %}
+            <span class="next"><a href="{{content.newer}}">{{ view.spec.date and content.newer.range(month='MMMM YYYY',year='YYYY') or "Newer" }}</a></span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="expand"></div>
+    </div>
+    {% endblock %}
+
+</div>
+
+</body></html>

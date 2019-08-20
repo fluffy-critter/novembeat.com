@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block title %}
+    <title>{{category.name}}: {{ entry.title(markup=False) }}</title>
+    {% endblock %}
+
+    <link rel="stylesheet" href="{{ entry.stylesheet or 'style.css' }}">
+    <link rel="stylesheet" href="{{ static('lightbox/css/lightbox.min.css') }}">
+    <link rel="alternate" type="application/atom+xml" title="Atom feed" href="feed" />
+    <link rel="shortcut icon" href="{{ static('favicon.ico') }}" />
+    <link rel="icon" type="image/png" href="{{ static('favicon.png') }}" />
+    <link rel="shortcut" href="{{ entry.link(absolute=True,expand=False) }}" />
+    <link rel="canonical" href="{{ entry.link(absolute=True,_scheme='https') }}" />
+
+    {% include '/_webmention.html' %}
+
+    <link rel="up" href="{{category.link}}" />
+    {% if entry.previous %}
+    <link rel="previous" href="{{entry.previous.link}}" />
+    {% endif %}
+    {% if entry.next %}
+    <link rel="next" href="{{entry.next.link}}" />
+    {% endif %}
+
+    {% block scripthooks %}
+    {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML" async></script>
+
+    {{ entry.card(width=800,height=800) }}
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@fluffy" />
+</head>
+<body id="entry">
+
+{%- macro navlink(e) -%}
+<a href="{{e.link}}" {% if e.private %}class="private"{% endif %}>{{'🔏 ' if e.private else ''}}{{e.title}}</a>
+{%- endmacro -%}
+
+<div id="container">
+    <div class="top-hook"></div>
+
+    <div id="banner">
+        <div class="top-hook"></div>
+        <h1><a href="{{category.link}}">{{category.name}}</a></h1>
+    </div>
+
+    <div id="entries">
+        <div class="top-hook"></div>
+
+        {% set prev = entry.previous(entry_type_not='sidebar') %}
+        {% set next = entry.next(entry_type_not='sidebar') %}
+        {% if prev or next %}
+        <div class="nav topnav">
+            <div>
+                <span class="prev">
+                    {% if prev %}{{ navlink(prev) }}{% endif %}
+                </span>
+
+                &nbsp;
+
+                <span class="next">
+                    {% if next %}{{ navlink(next) }}{% endif %}
+                </span>
+            </div>
+        </div>
+        {% endif %}
+
+        {% block content %}
+        <article class="entry h-entry{{' private' if entry.private else ''}}">
+            <header class="heading">
+                {% block heading %}
+                <div class="top-hook"></div>
+                <h2><a href="{{entry.link}}" class="u-url p-name">{{'🔏 ' if entry.private else ''}}{{entry.title}}</a></h2>
+                <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
+                    <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
+                    <span class="time">{{entry.date.format('h:mm A')}}</span>
+                    <span class="ago">{{entry.date.humanize()}}</span></time>
+                    {%- if entry.author -%}
+                        <span class="author">
+                        by <a rel="author" href="{{entry['Author-URL'] or '/'}}" class="p-author h-card">{{entry.author or 'fluffy'}}</a>
+                        </span>
+                    {%- else -%}
+                        {%- include '/_hcard.html' -%}
+                    {%- endif -%}
+
+                    {% if entry.summary %}
+                    <span class="hidden p-summary">{{ entry.summary }}</span>
+                    {% endif %}
+                </div>
+                {% endblock %}
+            </header>
+
+            {% block entrytags %}
+                {% if entry.tags %}
+                <nav class="tags">Tags:
+                <ul class="tags">
+                    {% for tag in entry.tags %}
+                    <li><a rel="tag" href="{{entry.archive(tag=tag)}}">{{tag}}</a></li>
+                    {% endfor %}
+                </ul></nav>
+                {% endif %}
+            {% endblock %}
+
+            {%- for type in ('like-of', 'in-reply-to', 'repost-of', 'bookmark-of', 'mention-of') -%}
+                {%- for link in entry.get_all(type) -%}
+                    <a href="{{link}}" class="hidden u-{{type}}"></a>
+                {%- endfor -%}
+            {%- endfor -%}
+
+            {%- for rsvp in entry.get_all('rsvp') -%}
+                {% with url,value = rsvp.split() %}
+                <a class="hidden u-in-reply-to" href="{{url}}"><data class="p-rsvp" value="{{value}}"></data></a>
+                {% endwith %}
+            {%- endfor -%}
+            <a class="hidden" href="https://fed.brid.gy/"></a>
+
+            <div class="content e-content">
+                {% block entrybody %}
+                {% if entry.body %}
+                <div id="preamble" class="body">
+                    {{entry.body(gallery_id=entry.uuid,
+                        div_class='images',
+                        img_class='u-photo',
+                        width=960,
+                        height=640,
+                        fullsize_width=3840,
+                        fullsize_height=2160,
+                        fullsize_quality=35)}}
+                </div>
+                {% endif %}
+                {% endblock %}
+
+                {% block entrymore %}
+                {% if entry.more %}
+                <div id="more">
+                    {{entry.more(gallery_id=entry.uuid,
+                        div_class='images',
+                        img_class='u-photo',
+                        width=360,
+                        height=360,
+                        fullsize_width=3840,
+                        fullsize_height=2160,
+                        fullsize_quality=35)}}
+                </div>
+                {% endif %}
+                {% endblock %}
+            </div>
+
+            {% block webmentions %}
+            <div class="webmentions" id="webmentions"></div>
+            {% endblock %}
+
+	    {% if not entry['Disable-Comments'] %}
+            {% block comments %}
+            <div class="comments" id="comments">
+                <div class="heading">
+                    <h2>Comments</h2>
+                </div>
+
+                {% include '/_comment_thread.html' %}
+            </div>
+            {% endblock %}
+	    {% endif %}
+        </article>
+        {% endblock %}
+
+
+    </div>
+
+</div>
+
+<script src="{{ static('lightbox/js/lightbox-plus-jquery.min.js') }}"></script>
+</body></html>

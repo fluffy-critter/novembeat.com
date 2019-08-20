@@ -1,0 +1,12 @@
+logs/
+index.db
+static/_img/
+tmp/
+.DS_Store
+public/.wm/
+__pycache__/
+*.db
+*.sublime-workspace
+flask_profiler.sql
+static/temp/
+.sessionkey
