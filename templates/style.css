@@ -15,11 +15,24 @@ html {
 h1, h2, h3 {
     text-align: center;
     font-family: "Gill Sans", "Futura", sans-serif;
-    background: #333;
-    color: white;
     font-weight: lighter;
     margin: 0;
     padding: 1ex;
+}
+
+h1 {
+    background: #333;
+    color: white;
+}
+
+h2 {
+    background: #111;
+    color: white;
+}
+
+h3 {
+    background: #eee;
+    color: black;
 }
 
 h1 a, h2 a, h3 a {
@@ -40,6 +53,7 @@ nav {
     font-size: 120%;
     display: table;
     width: 100%;
+    font-variant: small-caps;
 }
 nav ul {
     display: table-row;
@@ -52,10 +66,13 @@ nav ul {
 nav li {
     display: table-cell;
     width: 25%;
+    height: 100%;
+    vertical-align: middle;
     margin: 0;
     padding: 0;
     text-align: center;
     font-family: "Gill Sans", "Futura", sans-serif;
+    background: #444;
 }
 
 nav li a {
@@ -68,10 +85,15 @@ nav li a {
 }
 nav li a:hover {
     background: #555;
+    text-shadow: 0px 0px 5px black;
 }
 
 nav li.here {
     background: #ccc;
     color: black;
     padding: 1em 0;
+}
+
+.posted {
+    display: none;
 }
