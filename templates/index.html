@@ -11,7 +11,7 @@
     {%- if view.range %} | {{ view.range }}{% endif %}</title>
 {% endblock %}
 
-{% set content = view(entry_type_not='sidebar',count=20) %}
+{% set content = view(entry_type_not='sidebar',count=10) %}
 
 
 {% block stylesheet %}
@@ -47,28 +47,24 @@
 
     {% block banner %}
     <div id="banner">
-        <h1>{{ category.name or "Novembeat" }}
-        {%- if view.tags %}
-            ({{view.tags|map('title')|join(', ')}})
-        {%- endif -%}
-        </h1>
-        {% if category.description %}
-        <div id="description">{{category.description}}</div>
-        {% endif %}
+        <h1>{% if category != category.root %}Novembeat: {{ category.name }}{% else %}Novembeat{% endif %}</h1>
     </div>
     {% endblock %}
 
     {% block navigation %}
     <nav id="nav">
         <ul>
-            {% for cat in category.breadcrumb[:-1] %}
-            <li><a href="{{cat.link}}">{{cat.shortname or cat.name}}</a></li>
-            {% endfor %}
-            <li class="here">
-                {{category.name}} {% if view.range or view.tags %}(<a href="{{category.link}}">Latest entries</a>){% endif %}
-            </li>
-            {% for subcat in category.subcats %}
+            {% if category != category.root %}
+            <li><a href="/">Novembeat</a></li>
+            {% else %}
+            <li class="here">Novembeat</li>
+            {% endif %}
+            {% for subcat in category.root.subcats %}
+            {% if subcat != category %}
             <li><a href="{{subcat.link}}">{{subcat.shortname or subcat.name}}</a></li>
+            {% else %}
+            <li class="here">{{subcat.shortname or subcat.name}}</li>
+            {% endif %}
             {% endfor %}
         </ul>
     </nav>
@@ -76,6 +72,10 @@
 
     {% block content %}
     <div id="entries">
+
+        {% if category.description %}
+        <div id="description">{{category.description}}</div>
+        {% endif %}
 
         {% if content.older or content.newer %}
         <div class="nav topnav">
@@ -104,24 +104,12 @@
                     {% if entry.author %}
                     by
                     <span class="author">
-                        <a rel="author" href="{{entry.authorURL or '/'}}" class="p-author h-card">{{entry.author}}</a>
+                        <a rel="author" href="{{entry.get('author-URL') or '/'}}" class="p-author h-card">{{entry.author}}</a>
                     </span>
                     {% endif %}
                 </div>
                 {% endblock %}
             </div>
-
-            {% block entrytags scoped %}
-                <div class="tags">
-                {% if entry.tags %}Tags:
-                <ul class="tags">
-                    {% for tag in entry.tags %}
-                    <li><a rel="tag" href="{{view(tag=tag)}}">{{tag}}</a></li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                </div>
-            {% endblock %}
 
             <div class="content">
                 {% block entrybody scoped %}

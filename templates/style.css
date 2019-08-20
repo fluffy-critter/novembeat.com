@@ -1,11 +1,15 @@
 html {
     background: black;
+    font-family: "Helvetica Neue", sans-serif;
 }
 
 #container {
     background: white;
     color: black;
     margin: 3em;
+    box-shadow: 0px 0px 16px rgba(0,255,255,0.7);
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 h1, h2, h3 {
@@ -16,4 +20,58 @@ h1, h2, h3 {
     font-weight: lighter;
     margin: 0;
     padding: 1ex;
+}
+
+h1 a, h2 a, h3 a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: -1ex;
+    padding: 1ex;
+    color: white;
+}
+
+.entry .body, #description {
+    padding: 1em;
+}
+
+
+nav {
+    font-size: 120%;
+    display: table;
+    width: 100%;
+}
+nav ul {
+    display: table-row;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    display: table-cell;
+    width: 25%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: "Gill Sans", "Futura", sans-serif;
+}
+
+nav li a {
+    background: #444;
+    color: white;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 1em 0;
+}
+nav li a:hover {
+    background: #555;
+}
+
+nav li.here {
+    background: #ccc;
+    color: black;
+    padding: 1em 0;
 }
