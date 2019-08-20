@@ -60,32 +60,17 @@
 
     {% block navigation %}
     <nav id="nav">
-        <h2>Navigation</h2>
-        <ul class="breadcrumb">
+        <ul>
             {% for cat in category.breadcrumb[:-1] %}
             <li><a href="{{cat.link}}">{{cat.shortname or cat.name}}</a></li>
             {% endfor %}
             <li class="here">
                 {{category.name}} {% if view.range or view.tags %}(<a href="{{category.link}}">Latest entries</a>){% endif %}
             </li>
-        </ul>
-
-        {% if category.subcats %}
-        <ul class="subcats">
             {% for subcat in category.subcats %}
             <li><a href="{{subcat.link}}">{{subcat.shortname or subcat.name}}</a></li>
             {% endfor %}
         </ul>
-        {% endif %}
-
-        {% set sidebar = get_view(category=category,entry_type='sidebar',order='title') %}
-        {% if sidebar.entries %}
-        <ul class="sidebar">
-            {% for entry in sidebar.entries %}
-            <li><a href="{{entry.link}}">{{entry.title}}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </nav>
     {% endblock %}
 
