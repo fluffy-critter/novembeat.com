@@ -11,7 +11,14 @@
     {%- if view.range %} | {{ view.range }}{% endif %}</title>
 {% endblock %}
 
-{% set content = view(entry_type_not='sidebar',count=10) %}
+```jinja
+{% set content = view(entry_type_not='sidebar',
+                      order=category.order or "newest",
+                      count=int(category.count) if category.count else None) %}
+{% if category.paging == 'year' and content.is_current %}
+{% set content = content(date=category.last.date_year) %}
+{% endif %}
+```
 
 
 {% block stylesheet %}
@@ -41,6 +48,18 @@
 
 <body id="{{ template.name }}">
 
+
+{% if not pagination %}
+{% macro pagination() %}
+    {% if content.older %}
+    <span class="prev"><a href="{{content.older}}">{{ view.spec.date and content.older.range(month='MMMM YYYY',year='YYYY') or "Older" }}</a></span>
+    {% endif %}
+    &nbsp;
+    {% if content.newer %}
+    <span class="next"><a href="{{content.newer}}">{{ view.spec.date and content.newer.range(month='MMMM YYYY',year='YYYY') or "Newer" }}</a></span>
+    {% endif %}
+{% endmacro %}
+{% endif %}
 
 <div id="container">
     <div class="top-hook"></div>
@@ -78,14 +97,8 @@
         {% endif %}
 
         {% if content.older or content.newer %}
-        <div class="nav topnav">
-            {% if content.older %}
-            <span class="prev"><a href="{{content.older}}">{{ view.spec.date and content.older.range(month='MMMM YYYY',year='YYYY') or "Older" }}</a></span>
-            {% endif %}
-            &nbsp;
-            {% if content.newer %}
-            <span class="next"><a href="{{content.newer}}">{{ view.spec.date and content.newer.range(month='MMMM YYYY',year='YYYY') or "Newer" }}</a></span>
-            {% endif %}
+        <div class="pagination">
+            {{ pagination() }}
         </div>
         {% endif %}
 
@@ -134,18 +147,6 @@
         </article>
         {% endfor %}
         {% endblock %}
-
-        {% if content.older or content.newer %}
-        <div class="nav bottomnav">
-            {% if content.older %}
-            <span class="prev"><a href="{{content.older}}">{{ view.spec.date and content.older.range(month='MMMM YYYY',year='YYYY') or "Older" }}</a></span>
-            {% endif %}
-            &nbsp;
-            {% if content.newer %}
-            <span class="next"><a href="{{content.newer}}">{{ view.spec.date and content.newer.range(month='MMMM YYYY',year='YYYY') or "Newer" }}</a></span>
-            {% endif %}
-        </div>
-        {% endif %}
 
         <div class="expand"></div>
     </div>
