@@ -10,3 +10,7 @@ Sure! If you'd like me to add something, get in touch and I'll see what I can do
 * [Email me](mailto:fluffy-novembeat%40b%65esbuzz.biz)
 * Message me on [Mastodon](https://queer.party/@fluffy) or [Twitter](https://twitter.com/fluffy)
 * Carrier pigeon
+
+SoundCloud playlists are preferred, but anything that's easy to embed or link to is fine.
+
+And of course, if you release an album with your Novembeat output, absolutely let me know!
