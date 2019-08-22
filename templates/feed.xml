@@ -6,7 +6,7 @@
     xmlns:fh="http://purl.org/syndication/history/1.0"
     xmlns:at="http://purl.org/atompub/tombstones/1.0">
 
-    <title>{{"busybee: " ~ category.name if category.parent else category.name}}</title>
+    <title>{{"Novembeat: " ~ category.name if category.parent else category.name}}</title>
     <subtitle>Art, music, comics, and more</subtitle>
     <link href="{{ view.link(template='feed',absolute=True) }}" rel="self" />
     <link href="{{ category.link(template='feed',absolute=True) }}" rel="current" />
@@ -33,12 +33,27 @@
         <author><name>{{ entry.author if entry.author else "fluffy" }}</name></author>
         <content type="html"><![CDATA[
 
-		{% if entry.private %}
-		<aside><i><mark>Note:</mark> This is a private entry, so please use discretion in linking to it or mentioning it publicly. Thanks!</i></aside>
-		{% endif %}
+{{entry.body(
+    max_width=640,
+    max_height=640,
+    link=entry.link(absolute=True),
+    resize="fit",
+    div_class='images',
+    absolute=True,
+)}}
 
-            {%- include get_template('_feed_entry', entry) -%}
-            <p><a href="{{entry.link(absolute=True)}}#comments">comments</a></p>
+{% if entry.get('cut') %}
+<p><a href="{{entry.link(absolute=True)}}">Read more...</a> ({{entry.get('cut')}})</p>
+{% else %}
+{{entry.more(
+    max_width=640,
+    max_height=640,
+    link=entry.link(absolute=True),
+    resize="fit",
+    div_class='images',
+    absolute=True,
+)}}
+{% endif %}
 
         ]]></content>
         {% for cat in entry.category.breadcrumb -%}
