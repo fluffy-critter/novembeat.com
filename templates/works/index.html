@@ -2,6 +2,12 @@
 
 {% macro pagination() %}
 <ul>
-    <li>1234</li>
+    {% for page in content.pages %}
+    {% if page == content %}
+    <li class="here">{{page.range(year='YYYY')}}</li>
+    {% else %}
+    <li><a href="{{page.link}}">{{page.range(year='YYYY')}}</a></li>
+    {% endif %}
+    {% endfor %}
 </ul>
 {% endmacro %}

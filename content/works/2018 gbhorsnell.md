@@ -1,4 +1,4 @@
-Title: Grant Basma Horsnell, 2018
+Title: Grant Basma Horsnell
 Author: Grant Basma Horsnell
 Author-URL: https://soundcloud.com/grant-horsnell/
 Date: 2018-11-01

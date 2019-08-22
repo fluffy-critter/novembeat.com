@@ -1,4 +1,4 @@
-Title: fluffy, 2017
+Title: fluffy
 Author: fluffy
 Author-URL: https://beesbuzz.biz/
 Date: 2017-11-01

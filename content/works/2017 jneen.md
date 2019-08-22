@@ -1,4 +1,4 @@
-Title: jneen collective, 2017
+Title: jneen collective
 Author: jneen collective
 Author-URL: https://soundcloud.com/jneen-collective/
 Date: 2017-11-01

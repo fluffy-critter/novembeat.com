@@ -11,15 +11,12 @@
     {%- if view.range %} | {{ view.range }}{% endif %}</title>
 {% endblock %}
 
-```jinja
 {% set content = view(entry_type_not='sidebar',
                       order=category.order or "newest",
                       count=int(category.count) if category.count else None) %}
 {% if category.paging == 'year' and content.is_current %}
 {% set content = content(date=category.last.date_year) %}
 {% endif %}
-```
-
 
 {% block stylesheet %}
     <link rel="stylesheet" href="style.css" />
@@ -109,7 +106,10 @@
             <div class="heading">
                 {% block heading scoped %}
                 <div class="top-hook"></div>
-                <h2><a href="{{entry.link}}" class="u-url p-name">{{'🔏 ' if entry.private else ''}}{{entry.title}}</a></h2>
+                <h2>{% if category.pagelinks or entry.get('author-URL') -%}
+                    <a href="{{entry.get('author-URL', entry.get('author-URL'))}}" class="u-url p-name">
+                    {%- endif %}{{entry.title}}
+                    {%- if entry.get('author-URL') %}</a>{% endif %}</h2>
                 <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
                     <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
                     <span class="time">{{entry.date.format('h:mm A')}}</span>
