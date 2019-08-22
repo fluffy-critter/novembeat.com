@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 publ = "*"
 gunicorn = "*"
+python-memcached = "*"
 
 [requires]
 python_version = "3.7"
