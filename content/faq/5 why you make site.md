@@ -1,3 +1,4 @@
+Status: GONE
 Title: Why are you making this site? You aren't Paul, are you?
 Sort-Title: 005
 Date: 2019-08-19 20:09:41-07:00
