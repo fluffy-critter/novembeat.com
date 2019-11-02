@@ -67,6 +67,8 @@ def deploy():
 
     mac = hmac.new(secret.encode('utf-8'), msg=request.data, digestmod='sha1')
     if not hmac.compare_digest(str(mac.hexdigest()), str(signature)):
+        LOGGER.error("Expected signature: %s  Received: %s", mac.hexdigest(),
+            signature)
         raise http_error.Forbidden("Signature mismatch")
 
     try:
