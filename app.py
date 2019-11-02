@@ -43,10 +43,38 @@ config = {
 
 app = publ.Publ(__name__, config)
 
+
 @app.route('/favicon.ico')
 def favicon():
     return flask.redirect(flask.url_for('static', filename='favicon.ico'))
 
 
-if __name__ == "__main__":
-    app.run(port=os.environ.get('PORT', 5000))
+@app.route('/_deploy', methods=['POST'])
+def deploy():
+    import threading
+
+    import hmac
+    digest = hmac.new(os.environ.get('GITHUB_SECRET'),
+                      flask.request.get_data(),
+                      digestmod='sha1')
+    if not hmac.compare_digest(digest.hexdigest(),
+                               flask.request.headers.get('X-Hub-Signature')):
+        raise http_error.Forbidden()
+
+    try:
+        result = subprocess.check_output(
+            ['./deploy.sh', 'nokill'],
+            stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as err:
+        logging.error("Deployment failed: %s", err.output)
+        return flask.Response(err.output, status_code=500, mimetype='text/plain')
+
+    def restart_server(pid):
+        logging.info("Restarting")
+        os.kill(pid, signal.SIGHUP)
+
+    logging.info("Restarting server in 3 seconds...")
+    threading.Timer(3, restart_server, args=[os.getpid()]).start()
+
+    return flask.Response(result, mimetype='text/plain')
+
