@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-{%- set view = view(recurse=True,count=30,entry_type_not="sidebar") -%}
-
+{%- set view = view(recurse=True,count=30,entry_type_not="sidebar") %}
 <feed xmlns="http://www.w3.org/2005/Atom"
     xmlns:fh="http://purl.org/syndication/history/1.0"
     xmlns:at="http://purl.org/atompub/tombstones/1.0">
@@ -24,7 +23,7 @@
 
     {% for entry in view.entries %}
     <entry>
-        <title>{{entry.category.name + ": " if entry.category.name != category.name}}{{entry.title(markup=False, no_smartquotes=True)}}</title>
+        <title>{{entry.category.name ~ ": " if entry.category.name != category.name}}{{entry.title(markup=False, no_smartquotes=True)}}</title>
         <link href="{{ entry.permalink(absolute=True) }}" rel="alternate" type="text/html" />
         <published>{{entry.date.isoformat()}}</published>
         <updated>{{entry.last_modified.isoformat()}}</updated>
