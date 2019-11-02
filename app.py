@@ -1,6 +1,5 @@
 """ Main Publ application """
 
-import flask
 import logging
 import logging.handlers
 import os
@@ -54,8 +53,10 @@ def favicon():
 
 @app.route('/_deploy', methods=['POST'])
 def deploy():
+    import flask
     import threading
     import hmac
+    import werkzeug.exceptions as http_error
 
     data=flask.request.get_data()
     LOGGER.info("Got deployment request: %r %s X-Hub-Signature=%s",
