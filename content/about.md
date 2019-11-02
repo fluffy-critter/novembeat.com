@@ -5,9 +5,7 @@ Date: 2019-08-19 19:56:36-07:00
 Entry-ID: 9
 UUID: 6456cdbd-27ca-59ec-9c5a-c390e11652be
 
-Visual artists have [Inktober](https://inktober.com/), where the challenge is to complete one drawing, ideally on paper, every day in October.
-
-Musicians have Novembeat, a similar challenge to record one piece of music every day in November. It can be big or small, a mere notion or an entire symphony. Flex the creative muscle and try to learn something new.
+Owing a great debt to [Inktober](https://inktober.com/), Novembeat is an informal challenge to record one piece of music every day in November. It can be big or small, a mere notion or an entire symphony. Flex the creative muscle and try to learn something new.
 
 This project was started in 2016 by [Paul Starr](https://pauls.adequate.website/). The original concept, in a tweet:
 
