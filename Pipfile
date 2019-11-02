@@ -10,6 +10,7 @@ autopep8 = "*"
 publ = "*"
 gunicorn = "*"
 python-memcached = "*"
+flask-hookserver = "*"
 
 [requires]
 python_version = "3.7"

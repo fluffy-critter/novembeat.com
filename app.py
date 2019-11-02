@@ -5,6 +5,7 @@ import logging.handlers
 import os
 
 import publ
+from flask.ext.hookserver import Hooks
 
 if os.path.isfile('logging.conf'):
     logging.config.fileConfig('logging.conf')
@@ -44,32 +45,19 @@ config = {
 }
 
 app = publ.Publ(__name__, config)
+app.config['GITHUB_WEBHOOKS_KEY'] = os.environ.get('GITHUB_SECRET')
 
 
 @app.route('/favicon.ico')
 def favicon():
     return flask.redirect(flask.url_for('static', filename='favicon.ico'))
 
+hooks=Hooks(app, url='/_deploy')
 
-@app.route('/_deploy', methods=['POST'])
+@hooks.hook('push')
 def deploy():
-    from flask import request
     import threading
-    import hmac
     import werkzeug.exceptions as http_error
-
-    algorithm, signature = request.headers.get(
-        'X-Hub-Signature').split('=')
-    secret = os.environ.get('GITHUB_SECRET')
-
-    LOGGER.info("Got deployment request: alg=%s sig=%s",
-                algorithm, signature)
-
-    mac = hmac.new(secret.encode('utf-8'), msg=request.data, digestmod='sha1')
-    if not hmac.compare_digest(str(mac.hexdigest()), str(signature)):
-        LOGGER.error("Expected signature: %s  Received: %s", mac.hexdigest(),
-            signature)
-        raise http_error.Forbidden("Signature mismatch")
 
     try:
         result = subprocess.check_output(
