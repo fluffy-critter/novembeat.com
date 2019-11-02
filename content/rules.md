@@ -1,5 +1,5 @@
-Title: What are the rules?
-Sort-Title: 002
+Title: The rules
+Sort-Title: 200
 Date: 2019-08-19 20:06:12-07:00
 Entry-ID: 7
 UUID: abb2ffeb-c3ce-52ac-abaa-803ed10b1da0
