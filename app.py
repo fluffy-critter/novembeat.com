@@ -23,7 +23,7 @@ else:
 
 logging.info("Setting up")
 
-LOGGER=logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -53,23 +53,21 @@ def favicon():
 
 @app.route('/_deploy', methods=['POST'])
 def deploy():
-    import flask
+    from flask import request
     import threading
     import hmac
     import werkzeug.exceptions as http_error
 
-    data=flask.request.get_data()
-    LOGGER.info("Got deployment request: %r %s X-Hub-Signature=%s",
-                flask.request.form,
-                data,
-                flask.request.headers.get('X-Hub-Signature'))
+    algorithm, signature = request.headers.get(
+        'X-Hub-Signature').split('=')
+    secret = os.environ.get('GITHUB_SECRET')
 
-    digest = hmac.new(os.environ.get('GITHUB_SECRET').encode('utf-8'),
-                      data,
-                      digestmod='sha1')
-    if not hmac.compare_digest(digest.hexdigest(),
-                               flask.request.headers.get('X-Hub-Signature')):
-        raise http_error.Forbidden()
+    LOGGER.info("Got deployment request: alg=%s sig=%s",
+                algorithm, signature)
+
+    mac = hmac.new(secret.encode('utf-8'), msg=request.data, digestmod='sha1')
+    if not hmac.compare_digest(str(mac.hexdigest()), str(signature)):
+        raise http_error.Forbidden("Signature mismatch")
 
     try:
         result = subprocess.check_output(
@@ -87,4 +85,3 @@ def deploy():
     threading.Timer(3, restart_server, args=[os.getpid()]).start()
 
     return flask.Response(result, mimetype='text/plain')
-
