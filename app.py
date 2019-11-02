@@ -56,14 +56,14 @@ def favicon():
 def deploy():
     import threading
     import hmac
-  
+
     data=flask.request.get_data()
     LOGGER.info("Got deployment request: %r %s X-Hub-Signature=%s",
                 flask.request.form,
                 data,
                 flask.request.headers.get('X-Hub-Signature'))
-    
-    digest = hmac.new(os.environ.get('GITHUB_SECRET'),
+
+    digest = hmac.new(os.environ.get('GITHUB_SECRET').encode('utf-8'),
                       data,
                       digestmod='sha1')
     if not hmac.compare_digest(digest.hexdigest(),
