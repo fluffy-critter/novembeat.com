@@ -1,8 +1,9 @@
 """ Main Publ application """
 
-import os
+import flask
 import logging
 import logging.handlers
+import os
 
 import publ
 
@@ -22,6 +23,8 @@ else:
                         format="%(levelname)s:%(threadName)s:%(name)s:%(message)s")
 
 logging.info("Setting up")
+
+LOGGER=logging.getLogger(__name__)
 
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -52,10 +55,16 @@ def favicon():
 @app.route('/_deploy', methods=['POST'])
 def deploy():
     import threading
-
     import hmac
+  
+    data=flask.request.get_data()
+    LOGGER.info("Got deployment request: %r %s X-Hub-Signature=%s",
+                flask.request.form,
+                data,
+                flask.request.headers.get('X-Hub-Signature'))
+    
     digest = hmac.new(os.environ.get('GITHUB_SECRET'),
-                      flask.request.get_data(),
+                      data,
                       digestmod='sha1')
     if not hmac.compare_digest(digest.hexdigest(),
                                flask.request.headers.get('X-Hub-Signature')):
