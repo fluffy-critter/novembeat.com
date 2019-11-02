@@ -5,7 +5,7 @@ import logging.handlers
 import os
 
 import publ
-from flask.ext.hookserver import Hooks
+from flask_hookserver import Hooks
 
 if os.path.isfile('logging.conf'):
     logging.config.fileConfig('logging.conf')
@@ -52,7 +52,7 @@ app.config['GITHUB_WEBHOOKS_KEY'] = os.environ.get('GITHUB_SECRET')
 def favicon():
     return flask.redirect(flask.url_for('static', filename='favicon.ico'))
 
-hooks=Hooks(app, url='/_deploy')
+hooks=Hooks(app, url='/_gh')
 
 @hooks.hook('push')
 def deploy():
