@@ -11,7 +11,7 @@ Sure! If you'd like me to add something, get in touch and I'll see what I can do
 * Message me on [Mastodon](https://queer.party/@fluffy) or [Twitter](https://twitter.com/fluffy)
 * Carrier pigeon
 
-SoundCloud playlists are preferred, but anything that's easy to embed or link to is fine (for example, a BandCamp album, a YouTube playlist, or even a Twitter thread or whatever).
+Embeddable playlists (e.g. SoundCloud, YouTube, Bandcamp, etc.) are preferred.
 
 And of course, if you release an album with your Novembeat output, absolutely let me know!
 
