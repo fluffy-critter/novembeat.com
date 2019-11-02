@@ -46,6 +46,7 @@ config = {
 
 app = publ.Publ(__name__, config)
 app.config['GITHUB_WEBHOOKS_KEY'] = os.environ.get('GITHUB_SECRET')
+app.config['VALIDATE_IP'] = False
 
 
 @app.route('/favicon.ico')
