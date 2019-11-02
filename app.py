@@ -56,9 +56,11 @@ def favicon():
 hooks=Hooks(app, url='/_gh')
 
 @hooks.hook('push')
-def deploy():
+def deploy(data, delivery):
     import threading
     import werkzeug.exceptions as http_error
+    import subprocess
+    import flask
 
     try:
         result = subprocess.check_output(
