@@ -11,8 +11,12 @@ Sure! If you'd like me to add something, get in touch and I'll see what I can do
 * Message me on [Mastodon](https://queer.party/@fluffy) or [Twitter](https://twitter.com/fluffy)
 * Carrier pigeon
 
-Embeddable playlists (e.g. SoundCloud, YouTube, Bandcamp, etc.) are preferred.
+Include the following information:
 
-And of course, if you release an album with your Novembeat output, absolutely let me know!
+* The name you'd like to be known as
+* A link to your website, if any
+* Link(s) to your music in the form of an embeddable playlist (e.g. SoundCloud, YouTube, Bandcamp album, etc.)
 
 Please note that I maintain this website more or less by hand (there's no Algorithm or Discovery) so it might take a while for things to show up, and I'm not going to update it every time you post a new track.
+
+And of course, if you release an album with your Novembeat output, absolutely let me know!
