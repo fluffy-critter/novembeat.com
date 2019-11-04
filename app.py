@@ -22,9 +22,9 @@ else:
                         ],
                         format="%(levelname)s:%(threadName)s:%(name)s:%(message)s")
 
-logging.info("Setting up")
-
 LOGGER = logging.getLogger(__name__)
+LOGGER.info("Setting up")
+
 
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -67,14 +67,14 @@ def deploy(data, delivery):
             ['./deploy.sh', 'nokill'],
             stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
-        logging.error("Deployment failed: %s", err.output)
+        LOGGER.error("Deployment failed: %s", err.output)
         return flask.Response(err.output, status_code=500, mimetype='text/plain')
 
     def restart_server(pid):
-        logging.info("Restarting")
+        LOGGER.info("Restarting")
         os.kill(pid, signal.SIGHUP)
 
-    logging.info("Restarting server in 3 seconds...")
+    LOGGER.info("Restarting server in 3 seconds...")
     threading.Timer(3, restart_server, args=[os.getpid()]).start()
 
     return flask.Response(result, mimetype='text/plain')
