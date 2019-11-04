@@ -157,6 +157,21 @@ nav li.here {
     text-shadow: 0px 0px 5px black;
 }
 
+.topnav {
+    font-size: small;
+    margin: 1ex;
+}
+
+.topnav .prev {
+    float: left;
+}
+.topnav .prev:before { content: "«"; }
+
+.topnav .next {
+    float: right;
+}
+.topnav .next:after { content: "»"; }
+
 @media screen and (max-width: 800px) {
     #container {
         margin: 0;
