@@ -2,6 +2,7 @@ Title: Can I get my Novembeat posts/playlists/albums/etc. featured here?
 Sort-Title: 600
 Date: 2019-08-19 20:10:31-07:00
 Entry-ID: 20
+Slug-Text: How to get featured
 UUID: 839ed266-ae3f-5123-b9b0-cb3772f31547
 
 Sure! If you'd like me to add something, get in touch and I'll see what I can do. Some means you can use (from most- to least-likely to succeed):
