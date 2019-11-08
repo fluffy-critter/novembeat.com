@@ -53,7 +53,7 @@ app.config['VALIDATE_IP'] = False
 def favicon():
     return flask.redirect(flask.url_for('static', filename='favicon.ico'))
 
-hooks=Hooks(app, url='/_gh')
+hooks = Hooks(app, url='/_gh')
 
 @hooks.hook('push')
 def deploy(data, delivery):
