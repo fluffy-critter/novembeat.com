@@ -16,7 +16,7 @@ Include the following information:
 
 * The name you'd like to be known as
 * A link to your website, if any
-* Link(s) to your music in the form of an embeddable playlist (e.g. SoundCloud, YouTube, Bandcamp album, etc.)
+* Link(s) to your music in the form of an embeddable playlist (e.g. YouTube, Funkwhale, Bandcamp album, etc.)
 
 Please note that I maintain this website more or less by hand (there's no Algorithm or Discovery) so it might take a while for things to show up, and I'm not going to update it every time you post a new track.
 
