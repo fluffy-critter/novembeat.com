@@ -109,8 +109,9 @@
             <div class="heading">
                 {% block heading scoped %}
                 <div class="top-hook"></div>
+                <a href="{{entry.link}}" class="u-url"></a>
                 <h2>{% if category.pagelinks or entry.get('author-URL') -%}
-                    <a href="{{entry.get('author-URL', entry.get('author-URL'))}}" class="u-url p-name">
+                    <a href="{{entry.get('author-URL', entry.get('author-URL'))}}" class="p-name">
                     {%- endif %}{{entry.title}}
                     {%- if entry.get('author-URL') %}</a>{% endif %}</h2>
                 <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
