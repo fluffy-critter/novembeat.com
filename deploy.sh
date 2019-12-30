@@ -9,7 +9,7 @@ if git diff --name-only HEAD@{1} | grep -q Pipfile.lock ; then
     pipenv install || exit 1
 fi
 
-if [ "$1" != "nokill" ]; then
-    echo "Restarting web services"
-    killall -HUP gunicorn
+if [ "$1" != "nokill" ] && git diff --name-only HEAD@{1} | grep -qE '^(templates/|app\.py)' ; then
+    echo "Detected template or config change; restarting web services"
+    systemctl --user restart novembeat.com.service
 fi
