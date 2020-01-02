@@ -1,15 +1,25 @@
 #!/bin/sh
 # wrapper script to pull the latest site content and redeploy
 
-cd  $(dirname $0)
+cd $(dirname $0)
+
+# see where in the history we are now
+PREV=$(git rev-parse --short HEAD)
+
 git pull --ff-only || exit 1
 
-if git diff --name-only HEAD@{1} | grep -q Pipfile.lock ; then
-    echo "Pipfile.lock changed; redeploying"
-    pipenv install || exit 1
+if git diff --name-only $PREV | grep -qE '^(templates/|app\.py)' ; then
+    echo "Configuration or template change detected"
+    disposition=reload-or-restart
 fi
 
-if [ "$1" != "nokill" ] && git diff --name-only HEAD@{1} | grep -qE '^(templates/|app\.py)' ; then
-    echo "Detected template or config change; restarting web services"
-    systemctl --user restart novembeat.com.service
+if git diff --name-only $PREV | grep -q Pipfile.lock ; then
+    echo "Pipfile.lock changed"
+    pipenv install || exit 1
+    disposition=restart
 fi
+
+if [ "$1" != "nokill" ] && [ ! -z "$disposition" ] ; then
+    systemctl --user $disposition novembeat.com
+fi
+
