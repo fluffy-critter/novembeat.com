@@ -36,7 +36,7 @@ config = {
     'timezone': 'US/Pacific',
     'cache': {
         'CACHE_TYPE': 'memcached',
-        'CACHE_DEFAULT_TIMEOUT': 3600,
+        'CACHE_DEFAULT_TIMEOUT': 5647,
         'CACHE_THRESHOLD': 500,
         'CACHE_KEY_PREFIX': 'novembeat.com',
     } if not os.environ.get('FLASK_DEBUG') else {},
