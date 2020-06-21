@@ -12,6 +12,7 @@ gunicorn = "*"
 python-memcached = "*"
 flask-hookserver = "*"
 watchdog = "==0.9.0"
+pushl = "*"
 
 [requires]
 python_version = "3.7"
