@@ -4,8 +4,9 @@ import logging
 import logging.handlers
 import os
 
-import publ
 from flask_hookserver import Hooks
+import flask
+import publ
 
 if os.path.isfile('logging.conf'):
     logging.config.fileConfig('logging.conf')
