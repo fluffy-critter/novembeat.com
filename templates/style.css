@@ -118,6 +118,8 @@ nav li.here {
 
 .posted {
     display: none;
+    font-size: small;
+    font-style: italic;
 }
 
 .pagination ul {

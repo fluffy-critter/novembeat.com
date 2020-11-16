@@ -74,15 +74,15 @@
                 {% block heading %}
                 <div class="top-hook"></div>
                 <h2><a href="{{entry.link}}" class="u-url p-name">{{'🔏 ' if entry.private else ''}}{{entry.title}}</a></h2>
-                <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
-                    <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
-                    <span class="time">{{entry.date.format('h:mm A')}}</span>
-                    <span class="ago">{{entry.date.humanize()}}</span></time>
-                    {%- if entry.author -%}
-                        <span class="author">
-                        by <a rel="author" href="{{entry['Author-URL'] or '/'}}" class="p-author h-card">{{entry.author}}</a>
-                        </span>
-                    {%- endif -%}
+                <div class="posted">
+                    <time class="dt-published" datetime="{{entry.date.isoformat()}}">
+                        <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
+                        <span class="time">{{entry.date.format('h:mm A')}}</span>
+                        <span class="ago">{{entry.date.humanize()}}</span>
+                    </time>
+                    {%- if entry.author -%}<span class="author">
+                        {% if entry['Author-URL'] %}<a rel="author" href="{{entry['Author-URL']}}" class="p-author h-card">{{entry.author}}</a>{% else %}{{entry.author}}{% endif %}
+                    </span>{%- endif -%}
 
                     {% if entry.summary %}
                     <span class="hidden p-summary">{{ entry.summary }}</span>

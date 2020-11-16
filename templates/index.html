@@ -106,27 +106,33 @@
 
         {% for entry in content.entries %}
         <article class="entry h-entry{{' private' if entry.private else ''}}">
-            <div class="heading">
-                {% block heading scoped %}
+            <div class="heading">{% block heading scoped %}
                 <div class="top-hook"></div>
                 <a href="{{entry.link}}" class="u-url"></a>
-                <h2>{% if category.pagelinks or entry.get('author-URL') -%}
-                    <a href="{{entry.get('author-URL', entry.get('author-URL'))}}" class="p-name">
-                    {%- endif %}{{entry.title}}
-                    {%- if entry.get('author-URL') %}</a>{% endif %}</h2>
-                <div class="posted"><time class="dt-published" datetime="{{entry.date.isoformat()}}">
-                    <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
-                    <span class="time">{{entry.date.format('h:mm A')}}</span>
-                    <span class="ago">{{entry.date.humanize()}}</span></time>
-                    {% if entry.author %}
-                    by
-                    <span class="author">
-                        <a rel="author" href="{{entry.get('author-URL') or '/'}}" class="p-author h-card">{{entry.author}}</a>
-                    </span>
+                <h2>
+                    {%- if entry['author-URL'] -%}
+                        <a href="{{entry.get('author-URL', entry.link)}}" class="p-name">
+                            {{entry.title}}
+                        </a>
+                    {%- else -%}
+                        {{entry.title}}
+                    {%- endif -%}
+                </h2>
+                <div class="posted">
+                    <time class="dt-published" datetime="{{entry.date.isoformat()}}">
+                        <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
+                        <span class="time">{{entry.date.format('h:mm A')}}</span>
+                        <span class="ago">{{entry.date.humanize()}}</span>
+                    </time>
+                    {%- if entry.author -%}<span class="author">
+                        {% if entry['Author-URL'] %}<a rel="author" href="{{entry['Author-URL']}}" class="p-author h-card">{{entry.author}}</a>{% else %}{{entry.author}}{% endif %}
+                    </span>{%- endif -%}
+
+                    {% if entry.summary %}
+                    <span class="hidden p-summary">{{ entry.summary }}</span>
                     {% endif %}
                 </div>
-                {% endblock %}
-            </div>
+            {% endblock %}</div>
 
             <div class="content">
                 {% block entrybody scoped %}
