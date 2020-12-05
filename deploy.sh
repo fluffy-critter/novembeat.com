@@ -13,9 +13,9 @@ if git diff --name-only $PREV | grep -qE '^(templates/|app\.py)' ; then
     disposition=reload-or-restart
 fi
 
-if git diff --name-only $PREV | grep -q Pipfile.lock ; then
-    echo "Pipfile.lock changed"
-    pipenv install || exit 1
+if git diff --name-only $PREV | grep -q poetry.lock ; then
+    echo "poetry.lock changed"
+    poetry install || exit 1
     disposition=restart
 fi
 
@@ -24,7 +24,7 @@ if [ "$1" != "nokill" ] && [ ! -z "$disposition" ] ; then
 fi
 
 echo "Updating the content index..."
-pipenv run flask publ reindex
+poetry run flask publ reindex
 
 count=0
 while [ $count -lt 5 ] && [ ! -S $HOME/.vhosts/beesbuzz.biz ] ; do
@@ -34,7 +34,7 @@ while [ $count -lt 5 ] && [ ! -S $HOME/.vhosts/beesbuzz.biz ] ; do
 done
 
 echo "Sending push notifications"
-pipenv run pushl -rvvkc $HOME/var/pushl \
+poetry run pushl -rvvkc $HOME/var/pushl \
     https://novembeat.com/feed \
     http://novembeat.com/feed
 
