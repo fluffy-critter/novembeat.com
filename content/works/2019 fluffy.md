@@ -1,6 +1,6 @@
-Title: fluffy
-Author: fluffy
-Author-URL: https://beesbuzz.biz/
+Title: Sockpuppet
+Author: Sockpuppet
+Author-URL: https://sockpuppet.us/
 Date: 2019-11-01
 Entry-ID: 36
 UUID: 22bf3534-92f6-5042-aca6-efb57fe9ff01
