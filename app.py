@@ -274,9 +274,12 @@ def submit_entry():
     except FileExistsError:
         raise http_error.Conflict(f"{filename}: file exists")
 
-    for fixup in range(5):
-        if publ.entry.scan_file(fullpath, filename, fixup):
-            break
+    try:
+        for fixup in range(5):
+            if publ.entry.scan_file(fullpath, filename, fixup):
+                break
+    except RuntimeError:
+        pass
 
     with orm.db_session():
         import publ.model
