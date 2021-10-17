@@ -34,26 +34,26 @@
 
     <p><label for="artist-name">Artist name:</label><br>
         <input id="artist-name" type="text" name="artist-name"
-            size=80 placeholder="Sockpuppet">
+            size=80 placeholder="Band or artist name">
     </p>
 
     <p><label for="artist-url">Artist homepage:</label><br>
         <input id="artist-url" type="url" name="artist-url"
-            size=80 placeholder="https://sockpuppet.us/">
+            size=80 placeholder="http://example.com/">
     </p>
 
     <p><label for="year">Submission year:</label>
         <select id="year" name="year">
-            {% for year in range(2016,arrow.get().year) %}
+            <option value="{{arrow.get().year}}" selected>{{arrow.get().year}}</option>
+            {% for year in range(arrow.get().year - 1, 2015, -1) %}
             <option value="{{year}}">{{year}}</option>
             {% endfor %}
-            <option value="{{arrow.get().year}}" selected>{{arrow.get().year}}</option>
         </select>
     </p>
 
     <p><label for="entry-url">Entry URL:</label><br>
         <input id="entry-url" type="url" name="entry-url"
-        size=80 placeholder="https://sockpuppet.us/album/novembeat-2020">
+        size=80 placeholder="Your playlist">
     </p>
 
     <div id="entry-preview"></div>
