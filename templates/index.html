@@ -73,17 +73,9 @@
     {% block navigation %}
     <nav id="nav">
         <ul>
-            {% if category != category.root %}
-            <li><a href="/">Novembeat</a></li>
-            {% else %}
-            <li class="here">Novembeat</li>
-            {% endif %}
+            <li{{' class="here"'|safe if category == category.root else ''}}><a href="/">Novembeat</a></li>
             {% for subcat in category.root.subcats %}
-            {% if subcat != category %}
-            <li><a href="{{subcat.link}}">{{subcat.shortname or subcat.name}}</a></li>
-            {% else %}
-            <li class="here">{{subcat.shortname or subcat.name}}</li>
-            {% endif %}
+            <li{{' class="here"'|safe if category == subcat else ''}}><a href="{{subcat.link}}">{{subcat.shortname or subcat.name}}</a></li>
             {% endfor %}
         </ul>
     </nav>

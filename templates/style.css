@@ -106,7 +106,6 @@ nav li {
 }
 
 nav li a {
-    background: #444;
     color: white;
     display: block;
     width: 100%;
@@ -121,7 +120,12 @@ nav li a:hover {
 nav li.here {
     background: #ccc;
     color: black;
-    padding: 1em 0;
+}
+nav li.here a {
+    color: black;
+}
+nav li.here a:hover {
+    color: white;
 }
 
 .posted {

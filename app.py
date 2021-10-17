@@ -254,6 +254,8 @@ def submit_entry():
         date = date.replace(year=year)
     elif year > date.year:
         raise http_error.BadRequest(f'{year} is in the future')
+    elif year == date.year and date.month < 11:
+        raise http_error.BadRequest(f'Please wait until Novembeat starts to submit')
 
     headers['Date'] = date.format()
 
