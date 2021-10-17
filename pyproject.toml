@@ -11,6 +11,7 @@ Pushl = "^0.3.0"
 python-memcached = "^1.59"
 flask-hookserver = "^1.1.0"
 publ = "^0.7.2"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 
