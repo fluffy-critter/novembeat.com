@@ -232,11 +232,12 @@ def submit_entry():
 
     headers = {}
 
-    if not form.get('artist-name'):
+    artistname = form.get('artist-name')
+    if not artistname:
         raise http_error.BadRequest('Missing artist name')
 
-    headers['Title'] = form['artist-name']
-    headers['Author'] = form['artist-name']
+    headers['Title'] = artistname
+    headers['Author'] = artistname
     if form.get('artist-url'):
         headers['Artist-URL'] = parse_url(form['artist-url']).geturl()
 
@@ -258,9 +259,9 @@ def submit_entry():
 
     body =  get_entry_text(form)
 
-    authorname = slugify.slugify(user.identity)
+    authorname = slugify.slugify(f'{user.humanize} {artistname}')
     filename = os.path.join(
-        'works', f'submission-{year} {authorname}.md')
+        'works', f'{year}-{authorname}.md')
     fullpath = os.path.join(APP_PATH, 'content', filename)
 
     # See https://github.com/PlaidWeb/Publ/issues/471 for a proposed better way to do this
