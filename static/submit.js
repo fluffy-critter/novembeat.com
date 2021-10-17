@@ -31,24 +31,19 @@
 
         try {
             response = await fetch(endpoint + "?url=" + encodeURIComponent(uri));
-            if (response.status !== 200) {
-                preview.className = "error";
-                preview.innerHTML = "Couldn't get preview: " + response.status;
-                return;
-            }
-
             data = await response.text();
+
             if (data) {
-                preview.className = "resolved";
                 preview.innerHTML = data;
             } else {
-                preview.className = "error";
-                preview.innerHTML = "Couldn't retrieve preview";
+                preview.innerHTML = "Couldn't get preview";
             }
+
+            preview.className = (response.status == 200) ? "resolved" : "error";
         } catch (error) {
             console.log(error);
             preview.className = "error";
-            preview.innerHTML = "Couldn't get preview: " + error;
+            preview.innerHTML = "Error getting preview: " + error;
         }
     }
 

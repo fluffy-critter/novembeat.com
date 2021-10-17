@@ -131,7 +131,10 @@ def parse_url(url):
 
 @app.route('/_preview')
 def generate_preview():
-    return generate_iframe(parse_url(flask.request.args['url']))
+    try:
+        return generate_iframe(parse_url(flask.request.args['url']))
+    except http_error.HTTPException as error:
+        return str(error), error.code
 
 
 @cache.memoize()
@@ -223,6 +226,9 @@ def submit_entry():
 
     headers = {}
 
+    if not form.get('artist-name'):
+        raise http_error.BadRequest('Missing artist name')
+
     headers['Title'] = form['artist-name']
     headers['Author'] = form['artist-name']
     if form.get('artist-url'):
@@ -246,7 +252,7 @@ def submit_entry():
 
     body =  get_entry_text(form)
 
-    authorname = slugify.slugify(form['artist-name'])
+    authorname = slugify.slugify(user.identity)
     filename = os.path.join(
         'works', f'submission-{year} {authorname}.md')
     fullpath = os.path.join(APP_PATH, 'content', filename)
