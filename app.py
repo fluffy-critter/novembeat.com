@@ -113,7 +113,8 @@ def deploy(data, delivery):
 
     def restart_server(pid):
         LOGGER.info("Restarting")
-        os.kill(pid, signal.SIGHUP)
+        subprocess.run(['systemctl', '--user', 'restart', 'novembeat.com'])
+        # os.kill(pid, signal.SIGTERM)
 
     LOGGER.info("Restarting server in 3 seconds...")
     threading.Timer(3, restart_server, args=[os.getpid()]).start()
