@@ -7,6 +7,7 @@ import os
 from flask_hookserver import Hooks
 import flask
 import publ
+import authl.flask
 
 if os.path.isfile('logging.conf'):
     logging.config.fileConfig('logging.conf')
@@ -43,11 +44,40 @@ config = {
     } if not os.environ.get('FLASK_DEBUG') else {},
 
     'index_rescan_interval': 86400,
+
+    'auth': {
+        'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
+
+        'SMTP_HOST': 'localhost',
+        'SMTP_PORT': 25,
+        'EMAIL_FROM': 'nobody@beesbuzz.biz',
+        'EMAIL_SUBJECT': 'Sign in to beesbuzz.biz',
+
+        'FEDIVERSE_NAME': 'busybee',
+        'FEDIVERSE_HOMEPAGE': 'https://beesbuzz.biz/',
+
+        'INDIEAUTH_CLIENT_ID': authl.flask.client_id,
+
+        'TWITTER_CLIENT_KEY': os.environ.get('TWITTER_CLIENT_KEY'),
+        'TWITTER_CLIENT_SECRET': os.environ.get('TWITTER_CLIENT_SECRET'),
+
+        'TEST_ENABLED': os.environ.get('FLASK_DEBUG'),
+    },
+
+    'auth_log_prune_age': 86400 * 90,
 }
 
 app = publ.Publ(__name__, config)
 app.config['GITHUB_WEBHOOKS_KEY'] = os.environ.get('GITHUB_SECRET')
 app.config['VALIDATE_IP'] = False
+
+if not os.path.isfile('.sessionkey'):
+    import uuid
+    with open('.sessionkey', 'w') as file:
+        file.write(str(uuid.uuid4()))
+    os.chmod('.sessionkey', 0o600)
+with open('.sessionkey') as file:
+    app.secret_key = file.read()
 
 
 @app.route('/favicon.ico')
