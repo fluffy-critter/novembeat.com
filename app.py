@@ -48,13 +48,8 @@ config = {
     'auth': {
         'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
 
-        'SMTP_HOST': 'localhost',
-        'SMTP_PORT': 25,
-        'EMAIL_FROM': 'nobody@beesbuzz.biz',
-        'EMAIL_SUBJECT': 'Sign in to beesbuzz.biz',
-
-        'FEDIVERSE_NAME': 'busybee',
-        'FEDIVERSE_HOMEPAGE': 'https://beesbuzz.biz/',
+        'FEDIVERSE_NAME': 'novembeat',
+        'FEDIVERSE_HOMEPAGE': 'https://novembeat.com/',
 
         'INDIEAUTH_CLIENT_ID': authl.flask.client_id,
 

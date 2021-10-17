@@ -11,7 +11,7 @@ git pull --ff-only || exit 1
 
 if git diff --name-only $PREV | grep -qE '^(templates/|app\.py)' ; then
     echo "Configuration or template change detected"
-    disposition=reload-or-restart
+    disposition=restart
 fi
 
 if git diff --name-only $PREV | grep -q poetry.lock ; then
@@ -28,7 +28,7 @@ echo "Updating the content index..."
 poetry run flask publ reindex
 
 count=0
-while [ $count -lt 5 ] && [ ! -S $HOME/.vhosts/beesbuzz.biz ] ; do
+while [ $count -lt 5 ] && [ ! -S $HOME/.vhosts/novembeat.com ] ; do
     count=$(($count + 1))
     echo "Waiting for service to restart... ($count)"
     sleep $count
