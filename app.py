@@ -143,9 +143,9 @@ def generate_iframe(parsed):
         qs = urllib.parse.parse_qs(parsed.query)
         LOGGER.debug("Parsed query string: %s", qs)
         if 'list' in qs:
-            return f'''<iframe width="100%" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
+            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
         if 'v' in qs:
-            return f'''<iframe width="100%" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
+            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
         raise http_error.BadRequest("Missing playlist or video ID")
 
     req = requests.get(parsed.geturl())
@@ -174,6 +174,7 @@ def generate_iframe(parsed):
             'og:video:width', 'twitter:player:width') or '100%'
         height = find_opengraph(
             'og:video:height', 'twitter:player:height') or '150'
+        desc = find_opengraph('og:title')
 
         if 'bandcamp.com' in vidurl:
             # bandcamp's player can be a lot better if we override the opengraph
@@ -181,7 +182,7 @@ def generate_iframe(parsed):
             width = '100%'
             height = max(int(height), 400)
 
-        return f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless></iframe>'
+        return f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>'
 
     raise http_error.UnsupportedMediaType(
         f"Don't know how to handle URL {url}")
