@@ -123,6 +123,8 @@ def deploy(data, delivery):
 
 
 def parse_url(url):
+    if '//' not in url:
+        url = f'https://{url}'
     parsed = urllib.parse.urlparse(url)
     if not parsed.scheme:
         parsed = parsed._replace(scheme='https')
@@ -152,9 +154,12 @@ def generate_iframe(parsed):
             return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
         raise http_error.BadRequest("Missing playlist or video ID")
 
-    req = requests.get(parsed.geturl())
-    if req.status_code != 200:
-        flask.abort(req.status_code)
+    try:
+        req = requests.get(parsed.geturl())
+        if req.status_code != 200:
+            flask.abort(req.status_code)
+    except IOError as error:
+        raise http_error.BadRequest(f"Unable to retrieve preview: {error}")
 
     if 'audio/' in req.headers['content-type']:
         return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>'''
