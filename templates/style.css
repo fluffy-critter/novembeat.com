@@ -71,6 +71,14 @@ h1 a:hover, h2 a:hover, h3 a:hover {
     margin: 1em 0;
 }
 
+.entry.private h2 {
+    background: #600;
+}
+
+.entry.private .pending {
+    font-size: small;
+    font-style: italic;
+}
 
 nav {
     font-size: 120%;
@@ -181,4 +189,8 @@ nav li.here {
         border-radius: 0;
         box-shadow: none;
     }
+}
+
+iframe {
+    border: none;
 }

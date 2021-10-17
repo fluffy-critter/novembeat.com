@@ -138,6 +138,9 @@
                 {% block entrybody scoped %}
                 {% if entry.body %}
                 <div class="body e-summary">
+                {% if entry.private %}
+                <p class="pending">This entry is pending moderation</p>
+                {% endif %}
                 {{ entry.body(max_width=240,
                     max_height=240,
                     link=entry.link,
