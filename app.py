@@ -232,7 +232,7 @@ def submit_entry():
 
     headers = {}
 
-    artistname = form.get('artist-name')
+    artistname = form.get('artist-name').trim()
     if not artistname:
         raise http_error.BadRequest('Missing artist name')
 
