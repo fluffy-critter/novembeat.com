@@ -7,12 +7,28 @@
 
 {% endblock %}
 
+{% macro pagination() %}
+<ul>
+    {% for page in content.pages %}
+    <li><a href="{{page.link}}">{{page.range(year='YYYY')}}</a></li>
+    {% endfor %}
+    <li class="here">Submit</li>
+</ul>
+{% endmacro %}
+
+
 {% block banner %}
 <h1>Submit a Work</h1>
 {% endblock %}
 
 {% block content %}
-<div id="entries"><div class="entry"><div class="body">
+<div id="entries">
+<div class="pagination">
+    {{ pagination() }}
+</div>
+
+
+<div class="entry"><div class="body">
 
 {% if user %}
 <p>Currently logged in as <a href="{{user.identity}}">{{user.humanize}}</a>. If this isn't you, please <a href="{{logout}}">log out</a>.</p>
