@@ -33,13 +33,22 @@
             response = await fetch(endpoint + "?url=" + encodeURIComponent(uri));
             data = await response.text();
 
-            if (data) {
+            if (response.status == 200) {
                 preview.innerHTML = data;
+            } else if (data) {
+                preview.innerHTML = `<p class="error">Error: ${data}</p>
+
+                <p>Not all audio sources are supported, but we'll make an effort to
+                add your music if it can be embedded. If you have more information about
+                an audio source that you'd like to support, please
+                <a href="https://github.com/fluffy-critter/novembeat.com/issues">open
+                an issue on GitHub</a> and we'll try to add it.</p>
+                `;
             } else {
                 preview.innerHTML = "Couldn't get preview";
             }
 
-            preview.className = (response.status == 200) ? "resolved" : "error";
+            preview.className = "resolved";
         } catch (error) {
             console.log(error);
             preview.className = "error";

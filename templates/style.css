@@ -186,6 +186,25 @@ nav li.here a:hover {
 }
 .topnav .next:after { content: "»"; }
 
+#entry-preview.pending {
+    padding: 1ex;
+    border: solid black 1px;
+    border-radius: 1ex;
+    background: repeating-linear-gradient(-45deg, white, white 1ex, #ccf 1ex, #ccf 2ex);
+    animation: progress 3s linear infinite;
+}
+
+#entry-preview p.error {
+    padding: 1ex;
+    border: solid black 1px;
+    border-radius: 1ex;
+    background: #ffd;
+}
+
+@keyframes progress {
+  0% { background-position: 0 0; }
+  100% { background-position: 14.14ex 0; }
+}
 @media screen and (max-width: 800px) {
     #container {
         margin: 0;
