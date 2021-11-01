@@ -30,7 +30,7 @@ else:
         os.makedirs('logs')
     except FileExistsError:
         pass
-    logging.basicConfig(level=logging.WARNING,
+    logging.basicConfig(level=logging.INFO,
                         handlers=[
                             logging.handlers.TimedRotatingFileHandler(
                                 'logs/publ.log', when='D'),
@@ -58,7 +58,7 @@ config = {
     } if not os.environ.get('FLASK_DEBUG') else {},
 
     'index_rescan_interval': 86400,
-    'index_wait_time': 0,
+    'index_wait_time': 5,
 
     'auth': {
         'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
@@ -191,7 +191,8 @@ def generate_iframe(parsed):
             # bandcamp's player can be a lot better if we override the opengraph
             vidurl = vidurl.replace('/tracklist=false', '').replace('/v=2', '')
             width = '100%'
-            height = max(int(height), 400)
+            if 'album=' in vidurl:
+                height = max(int(height), 400)
 
         return f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>'
 
@@ -222,6 +223,7 @@ def get_entry_text(form):
 def submit_entry():
     import publ.user
     import publ.entry
+    import publ.category
 
     user = publ.user.get_active()
     if not user:
@@ -277,12 +279,16 @@ def submit_entry():
     except FileExistsError:
         raise http_error.Conflict(f"{filename}: file exists")
 
+    flask.current_app.indexer.scan_file(fullpath, filename, 0)
+
+    while flask.current_app.indexer.in_progress:
+        time.sleep(0.5)
+
     with orm.db_session():
-        for _ in range(10):
-            import publ.model
-            entry_record = publ.model.Entry.get(file_path=fullpath)
-            if entry_record:
-                break
-            time.sleep(1)
-        entry_obj = publ.entry.Entry.load(entry_record)
-        return flask.redirect(entry_obj.archive(paging='year'))
+        import publ.model
+        entry_record = publ.model.Entry.get(file_path=fullpath)
+        if entry_record:
+            entry_obj = publ.entry.Entry.load(entry_record)
+            return flask.redirect(entry_obj.archive(paging='year'))
+        return flask.redirect(publ.category.load('works').link(date=year))
+

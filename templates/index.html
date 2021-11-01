@@ -97,7 +97,7 @@
         {% block entries %}
 
         {% for entry in content.entries %}
-        <article class="entry h-entry{{' private' if entry.private else ''}}">
+        <article class="entry h-entry{{' private' if entry.private else ''}}" id="entry-{{entry.id}}">
             <div class="heading">{% block heading scoped %}
                 <div class="top-hook"></div>
                 <a href="{{entry.link}}" class="u-url"></a>
