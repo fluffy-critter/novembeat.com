@@ -255,10 +255,8 @@ def submit_entry():
         raise http_error.BadRequest(f"Novembeat wasn't happening in {year}")
     elif year < date.year:
         date = date.replace(year=year)
-    elif year > date.year:
-        raise http_error.BadRequest(f'{year} is in the future')
-    elif year == date.year and date.month < 11:
-        raise http_error.BadRequest(f'Please wait until Novembeat starts to submit')
+    elif (year, 11) > (date.year, date.month):
+        raise http_error.BadRequest(f'November {year} is in the future')
 
     headers['Date'] = date.format()
 
