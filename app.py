@@ -5,6 +5,7 @@ import logging.handlers
 import os
 import os.path
 import email.message
+import time
 import urllib.parse
 
 import werkzeug.exceptions as http_error
@@ -57,7 +58,7 @@ config = {
     } if not os.environ.get('FLASK_DEBUG') else {},
 
     'index_rescan_interval': 86400,
-    'index_wait_time': 10,
+    'index_wait_time': 0,
 
     'auth': {
         'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
