@@ -290,5 +290,5 @@ def submit_entry():
         if entry_record:
             entry_obj = publ.entry.Entry.load(entry_record)
             return flask.redirect(entry_obj.archive(paging='year'))
-        return flask.redirect(publ.category.load('works').link(date=year))
+        return flask.redirect(publ.category.Category.load('works').link(date=year))
 
