@@ -276,15 +276,12 @@ def submit_entry():
     except FileExistsError:
         raise http_error.Conflict(f"{filename}: file exists")
 
-    try:
-        for fixup in range(5):
-            if publ.entry.scan_file(fullpath, filename, fixup):
-                break
-    except RuntimeError:
-        pass
-
     with orm.db_session():
-        import publ.model
-        entry_record = publ.model.Entry.get(file_path=fullpath)
+        for _ in range(10):
+            import publ.model
+            entry_record = publ.model.Entry.get(file_path=fullpath)
+            if entry_record:
+                break
+            time.sleep(1)
         entry_obj = publ.entry.Entry.load(entry_record)
         return flask.redirect(entry_obj.archive(paging='year'))
