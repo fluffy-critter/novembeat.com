@@ -13,5 +13,5 @@ UUID: 556af155-5398-5d3c-9cbf-9f3225891a44
 
 [YouTube](https://www.youtube.com/watch?v=FX2b3WJxykU&list=PLNRLpYEdwBNhD7WQYFrqckvaweUj9kKls):
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FX2b3WJxykU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLNRLpYEdwBNhD7WQYFrqckvaweUj9kKls" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>
 
