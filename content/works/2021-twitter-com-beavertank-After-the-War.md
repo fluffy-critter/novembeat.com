@@ -2,7 +2,6 @@ Title: After the War
 Author: After the War
 Artist-URL: https://alphathornomega.bandcamp.com/
 Submitter: https://twitter.com/i/user/1674646790
-Auth: https://twitter.com/i/user/1674646790
 Date: 2021-11-07 09:24:24-08:00
 Entry-ID: 34
 UUID: 9cba5565-8f92-537b-aa1f-c164b6f761db
