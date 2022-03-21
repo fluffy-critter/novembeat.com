@@ -58,7 +58,7 @@ config = {
     } if not os.environ.get('FLASK_DEBUG') else {},
 
     'index_rescan_interval': 86400,
-    'index_wait_time': 5,
+    'index_enable_watchdog': bool(os.environ.get('FLASK_DEBUG')),
 
     'auth': {
         'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
