@@ -11,7 +11,6 @@ import urllib.parse
 import werkzeug.exceptions as http_error
 
 import arrow
-from flask_hookserver import Hooks
 import flask
 import publ
 import authl.flask
@@ -22,6 +21,7 @@ import atomicwrites
 from pony import orm
 import requests
 from bs4 import BeautifulSoup
+from flask_github_webhook import GithubWebhook
 
 if os.path.isfile('logging.conf'):
     logging.config.fileConfig('logging.conf')
@@ -78,8 +78,8 @@ config = {
 }
 
 app = publ.Publ(__name__, config)
-app.config['GITHUB_WEBHOOKS_KEY'] = os.environ.get('GITHUB_SECRET')
-app.config['VALIDATE_IP'] = False
+app.config['GITHUB_WEBHOOK_ENDPOINT'] = '/_gh'
+app.config['GITHUB_WEBHOOK_SECRET'] = os.environ.get('GITHUB_SECRET')
 
 if not os.path.isfile('.sessionkey'):
     import uuid
@@ -95,11 +95,10 @@ def favicon():
     return flask.redirect(flask.url_for('static', filename='favicon.ico'))
 
 
-hooks = Hooks(app, url='/_gh')
+hooks = GithubWebhook(app)
 
-
-@hooks.hook('push')
-def deploy(data, delivery):
+@hooks.hook(event_type='push')
+def deploy(data):
     import threading
     import werkzeug.exceptions as http_error
     import subprocess
