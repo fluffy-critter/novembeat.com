@@ -97,7 +97,7 @@ def favicon():
 
 hooks = GithubWebhook(app)
 
-@hooks.hook(event_type='push')
+@hooks.hook()
 def deploy(data):
     import threading
     import werkzeug.exceptions as http_error
