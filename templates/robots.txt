@@ -1,0 +1,5 @@
+User-Agent: *
+Disallow: /_login/
+Disallow: /secret_porn_stash/
+
+
