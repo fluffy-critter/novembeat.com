@@ -104,6 +104,8 @@ def deploy(data):
     import subprocess
     import flask
 
+    LOGGER.info("Got github hook with data: %s", data)
+
     try:
         result = subprocess.check_output(
             ['./deploy.sh', 'nokill'],
