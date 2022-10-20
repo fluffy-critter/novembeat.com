@@ -5,6 +5,7 @@ import logging.handlers
 import os
 import os.path
 import email.message
+import re
 import time
 import urllib.parse
 
@@ -152,9 +153,13 @@ def generate_iframe(parsed):
         qs = urllib.parse.parse_qs(parsed.query)
         LOGGER.debug("Parsed query string: %s", qs)
         if 'list' in qs:
-            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
+            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
+                <a href="{url}">
+            </iframe>''', 'youtube.com'
         if 'v' in qs:
-            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless></iframe>'''
+            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
+                <a href="{url}">
+            </iframe>''', 'youtube.com'
         raise http_error.BadRequest("Missing playlist or video ID")
 
     try:
@@ -165,9 +170,9 @@ def generate_iframe(parsed):
         raise http_error.BadRequest(f"Unable to retrieve preview: {error}")
 
     if 'audio/' in req.headers['content-type']:
-        return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>'''
+        return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
     if 'video/' in req.headers['content-type']:
-        return f'''<video src="{url}" type="{req.headers['content-type']}" controls>'''
+        return f'''<video src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
 
     soup = BeautifulSoup(req.text, 'html.parser')
 
@@ -177,7 +182,7 @@ def generate_iframe(parsed):
             if node:
                 return node['content']
 
-        return None
+        return None, None
 
     vidurl = find_opengraph('og:video:secure_url',
                             'og:video', 'twitter:player')
@@ -195,20 +200,19 @@ def generate_iframe(parsed):
             if 'album=' in vidurl:
                 height = max(int(height), 400)
 
-        return f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>'
+        return (f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>',
+            re.sub('^www.','', urllib.parse.urlparse(vidurl).netloc))
 
     raise http_error.UnsupportedMediaType(
         f"Don't know how to handle URL {url}")
 
 
-def get_entry_text(form):
+def get_entry_text(form, playlists):
 
-    parsed = parse_url(form['entry-url'])
-    text = f'''
-[Playlist]({parsed.geturl()}):
-
-{generate_iframe(parsed)}
-'''
+    text = ''
+    for url, embed_text in playlists:
+        parsed = parse_url(url)
+        text += embed_text
 
     if 'comment' in form:
         text += f'''
@@ -261,7 +265,19 @@ def submit_entry():
 
     headers['Date'] = date.format()
 
-    body =  get_entry_text(form)
+    playlists = []
+    domains = set()
+    for field in ('entry-url', 'alternate-url'):
+        url = form.get(field)
+        embed_text, domain = generate_iframe(parse_url(url))
+        if domain:
+            if domain not in domains:
+                playlists.append((url, embed_text))
+                domains.add(domain)
+            else:
+                raise http_error.BadRequest(f'Got multiple URLs for {domain}')
+
+    body = get_entry_text(form, playlists)
 
     authorname = slugify.slugify(f'{user.humanize} {artistname}')
     filename = os.path.join(
