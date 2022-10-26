@@ -6,6 +6,9 @@ UUID: 4e2998d9-42e0-5e53-aa56-d216219d18bb
 
 I mean, nobody's stopping you.
 
-If you want something a bit more structured, consider participating in [Song Fight!](https://songfight.org/).
+Here's some other regular music challenges to consider:
 
-If January is more your speed, check out [Jamuary](https://jonathanmann.net/jamuary), which has been a hashtag since 2018; in turn it came from [Fun-A-Day](https://artclash.com/) which started in 2005!
+* [Song Fight!](https://songfight.org/), a weekly-ish songwriting challenge where you're given a title to write a song for (possibly the earliest and definitely the longest-running Internet songwriting challenge, since 2000!)
+* In January there's [Jamuary](https://jonathanmann.net/jamuary), which in turn came from [Fun-A-Day](https://artclash.com/)
+* February has [FAWM](https://fawm.org/), which also hosts the [Fifty-Ninety challenge](https://fiftyninety.fawm.org/) from July through October
+* [Weekly Beats](https://weeklybeats.com/) is a year-long challenge to make one beat every week
