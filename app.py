@@ -138,10 +138,11 @@ def parse_url(url):
 
 @app.route('/_preview')
 def generate_preview():
+    text, url=generate_iframe(parse_url(flask.request.args['url']))
     try:
         return f'''
 <!-- {url} -->
-{ generate_iframe(parse_url(flask.request.args['url']))[0] }
+{text}
 '''
     except http_error.HTTPException as error:
         return str(error), error.code
