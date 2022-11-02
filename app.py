@@ -1,4 +1,5 @@
 """ Main Publ application """
+# pylint:disable=missing-function-docstring,import-outside-toplevel
 
 import logging
 import logging.handlers
@@ -89,10 +90,10 @@ app.config['GITHUB_WEBHOOK_SECRET'] = os.environ.get('GITHUB_SECRET')
 
 if not os.path.isfile('.sessionkey'):
     import uuid
-    with open('.sessionkey', 'w') as file:
+    with open('.sessionkey', 'w', encoding='utf-8') as file:
         file.write(str(uuid.uuid4()))
     os.chmod('.sessionkey', 0o600)
-with open('.sessionkey') as file:
+with open('.sessionkey', encoding='utf-8') as file:
     app.secret_key = file.read()
 
 
@@ -107,9 +108,7 @@ hooks = GithubWebhook(app)
 @hooks.hook()
 def deploy(data):
     import threading
-    import werkzeug.exceptions as http_error
     import subprocess
-    import flask
 
     LOGGER.info("Got github hook with data: %s", data)
 
@@ -119,15 +118,15 @@ def deploy(data):
             stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         LOGGER.error("Deployment failed: %s", err.output)
-        return flask.Response(err.output, status_code=500, mimetype='text/plain')
+        return flask.Response(err.output, status=500, mimetype='text/plain')
 
-    def restart_server(pid):
+    def restart_server():
         LOGGER.info("Restarting")
-        subprocess.run(['systemctl', '--user', 'restart', 'novembeat.com'])
-        # os.kill(pid, signal.SIGTERM)
+        subprocess.run(['systemctl', '--user', 'restart',
+                       'novembeat.com'], check=True)
 
     LOGGER.info("Restarting server in 3 seconds...")
-    threading.Timer(3, restart_server, args=[os.getpid()]).start()
+    threading.Timer(3, restart_server).start()
 
     return flask.Response(result, mimetype='text/plain')
 
@@ -143,7 +142,7 @@ def parse_url(url):
 
 @app.route('/_preview')
 def generate_preview():
-    text, url=generate_iframe(parse_url(flask.request.args['url']))
+    text, url = generate_iframe(parse_url(flask.request.args['url']))
     try:
         return f'''
 <!-- {url} -->
@@ -155,11 +154,13 @@ def generate_preview():
 
 @cache.memoize()
 def generate_iframe(parsed):
+    # pylint:disable=line-too-long
     url = parsed.geturl()
 
     LOGGER.debug("Parsed URL: %s", parsed)
     if parsed.netloc.lower().endswith('youtube.com'):
         # YouTube supports opengraph but it strips out playlists :(
+        # pylint:disable=invalid-name
         qs = urllib.parse.parse_qs(parsed.query)
         LOGGER.debug("Parsed query string: %s", qs)
         if 'list' in qs:
@@ -173,7 +174,7 @@ def generate_iframe(parsed):
         raise http_error.BadRequest("Missing playlist or video ID")
 
     try:
-        req = requests.get(parsed.geturl())
+        req = requests.get(parsed.geturl(), timeout=3)
         if req.status_code != 200:
             flask.abort(req.status_code)
     except IOError as error:
@@ -222,8 +223,7 @@ def get_entry_text(form, playlists):
 
     text = ''
     for url, embed_text in playlists:
-        parsed = parse_url(url)
-        text += embed_text
+        text += f'<!-- {url} -->\n{embed_text}\n'
 
     if 'comment' in form:
         text += f'''
@@ -237,9 +237,7 @@ def get_entry_text(form, playlists):
 
 @app.route('/_submit', methods=['POST'])
 def submit_entry():
-    import publ.user
-    import publ.entry
-    import publ.category
+    # pylint:disable=too-many-locals,too-many-branches,too-many-statements
 
     user = publ.user.get_active()
     if not user:
@@ -269,7 +267,7 @@ def submit_entry():
     year = int(form['year'])
     if year < 2016:
         raise http_error.BadRequest(f"Novembeat wasn't happening in {year}")
-    elif year < date.year:
+    if year < date.year:
         date = date.replace(year=year)
     elif (year, 11) > (date.year, date.month):
         raise http_error.BadRequest(f'November {year} is in the future')
@@ -301,13 +299,13 @@ def submit_entry():
 
     # See https://github.com/PlaidWeb/Publ/issues/471 for a proposed better way to do this
     try:
-        with atomicwrites.atomic_write(fullpath) as file:
+        with atomicwrites.atomic_write(fullpath) as outfile:
             for key, val in headers.items():
-                print(f'{key}: {str(val)}', file=file)
-            print('', file=file)
-            print(body, file=file)
-    except FileExistsError:
-        raise http_error.Conflict(f"{filename}: file exists")
+                print(f'{key}: {str(val)}', file=outfile)
+            print('', file=outfile)
+            print(body, file=outfile)
+    except FileExistsError as exc:
+        raise http_error.Conflict(f"{filename}: file exists") from exc
 
     flask.current_app.indexer.scan_file(fullpath, filename, 0)
 
@@ -315,7 +313,6 @@ def submit_entry():
         time.sleep(0.5)
 
     with orm.db_session():
-        import publ.model
         entry_record = publ.model.Entry.get(file_path=fullpath)
         if entry_record:
             entry_obj = publ.entry.Entry.load(entry_record)
@@ -325,10 +322,7 @@ def submit_entry():
 
 
 def send_admin_mail(entry_obj):
-    import publ.model
-    import publ.entry
     from authl.handlers.email_addr import smtplib_connector, simple_sendmail
-    import email.message
 
     if not os.environ.get('ADMIN_EMAIL'):
         return
