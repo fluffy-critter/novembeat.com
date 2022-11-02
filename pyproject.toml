@@ -16,6 +16,7 @@ flask-github-webhook = "^0.2.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^2.0.0"
+pylint = "^2.15.5"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

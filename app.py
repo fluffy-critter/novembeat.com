@@ -355,4 +355,4 @@ Entry: {entry_obj.link(absolute=True)}
 Filename: {entry_obj.file_path}
 ''')
 
-    send_fumc(msg)
+    send_func(msg)
