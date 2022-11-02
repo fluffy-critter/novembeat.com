@@ -326,7 +326,6 @@ def submit_entry():
 
 def send_admin_mail(entry_obj):
     import publ.model
-    import publ.user
     import publ.entry
     from authl.handlers.email_addr import smtplib_connector, simple_sendmail
     import email.message
@@ -346,9 +345,6 @@ def send_admin_mail(entry_obj):
 
     msg = email.message.EmailMessage()
     msg['To'] = os.environ.get('ADMIN_EMAIL')
-
-    if user.profile and 'email' in user.profile:
-        msg['Reply-To'] = user.profile['email']
 
     msg.set_content(f'''
 The following entry was just submitted on novembeat.com:
