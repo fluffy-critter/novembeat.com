@@ -166,11 +166,11 @@ def generate_iframe(parsed):
         if 'list' in qs:
             return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
                 <a href="{url}">
-            </iframe>''', 'youtube.com'
+            </iframe>''', f"https://youtube.com/playlist?list={qs['list'][0]}"
         if 'v' in qs:
             return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
                 <a href="{url}">
-            </iframe>''', 'youtube.com'
+            </iframe>''', f"https://youtube.com/watch?v={qs['v'][0]}"
         raise http_error.BadRequest("Missing playlist or video ID")
 
     try:
