@@ -323,11 +323,12 @@ def send_admin_mail(entry_obj):
         return
 
     connector = smtplib_connector(
-    hostname=config['auth']['SMTP_HOST'],
-    port=config['auth']['SMTP_PORT'],
-    username=config['auth'].get('SMTP_USERNAME'),
-    password=config['auth'].get('SMTP_PASSWORD'),
-    use_ssl=config['auth'].get('SMTP_USE_SSL'),
+        hostname=config['auth']['SMTP_HOST'],
+        port=config['auth']['SMTP_PORT'],
+        username=config['auth'].get('SMTP_USERNAME'),
+        password=config['auth'].get('SMTP_PASSWORD'),
+        use_ssl=config['auth'].get('SMTP_USE_SSL'),
+    )
     send_func = simple_sendmail(connector, config['auth']['EMAIL_FROM'],
         f"New Novembeat entry: {entry_obj.title}")
 
