@@ -310,6 +310,40 @@ def submit_entry():
         entry_record = publ.model.Entry.get(file_path=fullpath)
         if entry_record:
             entry_obj = publ.entry.Entry.load(entry_record)
+            send_admin_mail(entry_obj)
             return flask.redirect(entry_obj.archive(paging='year'))
         return flask.redirect(publ.category.Category.load('works').link(date=year))
 
+def send_admin_mail(entry_obj):
+    import publ.model, publ.user, publ.entry
+    from authl.handlers.email_addr import smtplib_connector, simple_sendmail
+    import email.message
+
+    if not os.environ.get('ADMIN_EMAIL'):
+        return
+
+    connector = smtplib_connector(
+    hostname=config['auth']['SMTP_HOST'],
+    port=config['auth']['SMTP_PORT'],
+    username=config['auth'].get('SMTP_USERNAME'),
+    password=config['auth'].get('SMTP_PASSWORD'),
+    use_ssl=config['auth'].get('SMTP_USE_SSL'),
+    send_func = simple_sendmail(connector, config['auth']['EMAIL_FROM'],
+        f"New Novembeat entry: {entry_obj.title}")
+
+    msg = email.message.EmailMessage()
+    msg['To'] = os.environ.get('ADMIN_EMAIL')
+
+    if user.profile and 'email' in user.profile:
+        msg['Reply-To'] = user.profile['email']
+
+    msg.set_content(f'''
+The following entry was just submitted on novembeat.com:
+
+Artist: {entry_obj.get('Title')}
+Year: {entry_obj.date.format('YYYY')}
+Entry: {entry_obj.link(absolute=True)}
+Filename: {entry_obj.file_path}
+''')
+
+    send_fumc(msg)
