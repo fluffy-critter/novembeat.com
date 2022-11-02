@@ -138,7 +138,10 @@ def parse_url(url):
 @app.route('/_preview')
 def generate_preview():
     try:
-        return generate_iframe(parse_url(flask.request.args['url']))
+        return f'''
+        <!-- $url -->
+        { generate_iframe(parse_url(flask.request.args['url']))}
+        '''
     except http_error.HTTPException as error:
         return str(error), error.code
 
@@ -269,13 +272,16 @@ def submit_entry():
     domains = set()
     for field in ('entry-url', 'alternate-url'):
         url = form.get(field)
-        embed_text, domain = generate_iframe(parse_url(url))
-        if domain:
-            if domain not in domains:
-                playlists.append((url, embed_text))
-                domains.add(domain)
-            else:
-                raise http_error.BadRequest(f'Got multiple URLs for {domain}')
+        if url:
+            embed_text, domain = generate_iframe(parse_url(url))
+            if domain:
+                if domain not in domains:
+                    playlists.append((url, embed_text))
+                    domains.add(domain)
+                else:
+                    raise http_error.BadRequest(f'Got multiple URLs for {domain}')
+    if not playlists:
+        raise http_error.BadRequest("No playlist provided")
 
     body = get_entry_text(form, playlists)
 
