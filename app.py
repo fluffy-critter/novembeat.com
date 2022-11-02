@@ -140,7 +140,7 @@ def generate_preview():
     try:
         return f'''
         <!-- $url -->
-        { generate_iframe(parse_url(flask.request.args['url']))}
+        { generate_iframe(parse_url(flask.request.args['url']))[0] }
         '''
     except http_error.HTTPException as error:
         return str(error), error.code
