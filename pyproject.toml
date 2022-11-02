@@ -13,8 +13,8 @@ publ = {version="^0.7.2", extras=["auth"]}
 requests = "^2.26.0"
 flask-github-webhook = "^0.2.0"
 
-[tool.poetry.dev-dependencies]
-autopep8 = "^1.5.7"
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

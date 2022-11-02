@@ -98,6 +98,7 @@ def favicon():
 
 hooks = GithubWebhook(app)
 
+
 @hooks.hook()
 def deploy(data):
     import threading
@@ -170,7 +171,8 @@ def generate_iframe(parsed):
         if req.status_code != 200:
             flask.abort(req.status_code)
     except IOError as error:
-        raise http_error.BadRequest(f"Unable to retrieve preview for {url}: {error}")
+        raise http_error.BadRequest(
+            f"Unable to retrieve preview for {url}: {error}")
 
     if 'audio/' in req.headers['content-type']:
         return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
@@ -204,7 +206,7 @@ def generate_iframe(parsed):
                 height = max(int(height), 400)
 
         return (f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>',
-            re.sub('^www.','', urllib.parse.urlparse(vidurl).netloc))
+                re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc))
 
     raise http_error.UnsupportedMediaType(
         f"Don't know how to handle URL {url}")
@@ -279,7 +281,8 @@ def submit_entry():
                     playlists.append((url, embed_text))
                     domains.add(domain)
                 else:
-                    raise http_error.BadRequest(f'Got multiple URLs for {domain}')
+                    raise http_error.BadRequest(
+                        f'Got multiple URLs for {domain}')
     if not playlists:
         raise http_error.BadRequest("No playlist provided")
 
@@ -314,8 +317,11 @@ def submit_entry():
             return flask.redirect(entry_obj.archive(paging='year'))
         return flask.redirect(publ.category.Category.load('works').link(date=year))
 
+
 def send_admin_mail(entry_obj):
-    import publ.model, publ.user, publ.entry
+    import publ.model
+    import publ.user
+    import publ.entry
     from authl.handlers.email_addr import smtplib_connector, simple_sendmail
     import email.message
 
@@ -330,7 +336,7 @@ def send_admin_mail(entry_obj):
         use_ssl=config['auth'].get('SMTP_USE_SSL'),
     )
     send_func = simple_sendmail(connector, config['auth']['EMAIL_FROM'],
-        f"New Novembeat entry: {entry_obj.title}")
+                                f"New Novembeat entry: {entry_obj.title}")
 
     msg = email.message.EmailMessage()
     msg['To'] = os.environ.get('ADMIN_EMAIL')
