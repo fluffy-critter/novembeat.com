@@ -167,7 +167,7 @@ def generate_iframe(parsed):
         if req.status_code != 200:
             flask.abort(req.status_code)
     except IOError as error:
-        raise http_error.BadRequest(f"Unable to retrieve preview: {error}")
+        raise http_error.BadRequest(f"Unable to retrieve preview for {url}: {error}")
 
     if 'audio/' in req.headers['content-type']:
         return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
