@@ -301,7 +301,7 @@ def submit_entry():
 
     # See https://github.com/PlaidWeb/Publ/issues/471 for a proposed better way to do this
     try:
-        with atomicwrites.atomic_write(fullpath) as outfile:
+        with atomicwrites.atomic_write(fullpath, overwrite=True) as outfile:
             for key, val in headers.items():
                 print(f'{key}: {str(val)}', file=outfile)
             print('', file=outfile)
