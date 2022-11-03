@@ -142,10 +142,11 @@ def parse_url(url):
 
 @app.route('/_preview')
 def generate_preview():
-    text, url = generate_iframe(parse_url(flask.request.args['url']))
+    text, url, desc = generate_iframe(parse_url(flask.request.args['url']))
     try:
         return f'''
 <!-- {url} -->
+<p><a href="{url}">{desc}</a>:</p>
 {text}
 '''
     except http_error.HTTPException as error:
@@ -166,11 +167,11 @@ def generate_iframe(parsed):
         if 'list' in qs:
             return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
                 <a href="{url}">YouTube playlist</a>
-            </iframe>''', f"https://youtube.com/playlist?list={qs['list'][0]}"
+            </iframe>''', f"https://youtube.com/playlist?list={qs['list'][0]}", "YouTube playlist"
         if 'v' in qs:
             return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
-                <a href="{url}">YouTube playlist</a>
-            </iframe>''', f"https://youtube.com/watch?v={qs['v'][0]}"
+                <a href="{url}">YouTube video</a>
+            </iframe>''', f"https://youtube.com/watch?v={qs['v'][0]}", "YouTube video"
         raise http_error.BadRequest("Missing playlist or video ID")
 
     try:
@@ -182,9 +183,9 @@ def generate_iframe(parsed):
             f"Unable to retrieve preview for {url}: {error}")
 
     if 'audio/' in req.headers['content-type']:
-        return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
+        return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc, "Audio file"
     if 'video/' in req.headers['content-type']:
-        return f'''<video src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc
+        return f'''<video src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc, "Video file"
 
     soup = BeautifulSoup(req.text, 'html.parser')
 
@@ -194,7 +195,7 @@ def generate_iframe(parsed):
             if node:
                 return node['content']
 
-        return None, None
+        return None, None, None
 
     vidurl = find_opengraph('og:video:secure_url',
                             'og:video', 'twitter:player')
@@ -203,7 +204,7 @@ def generate_iframe(parsed):
             'og:video:width', 'twitter:player:width') or '100%'
         height = find_opengraph(
             'og:video:height', 'twitter:player:height') or '150'
-        desc = find_opengraph('og:title')
+        desc = find_opengraph('og:title') or "Playlist"
 
         if 'bandcamp.com' in vidurl:
             # bandcamp's player can be a lot better if we override the opengraph
@@ -213,7 +214,8 @@ def generate_iframe(parsed):
                 height = max(int(height), 400)
 
         return (f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>',
-                re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc))
+                re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc),
+                desc)
 
     raise http_error.UnsupportedMediaType(
         f"Don't know how to handle URL {url}")
@@ -222,8 +224,8 @@ def generate_iframe(parsed):
 def get_entry_text(form, playlists):
 
     text = ''
-    for url, embed_text in playlists:
-        text += f'<!-- {url} -->\n{embed_text}\n'
+    for url, embed_text, desc in playlists:
+        text += f'<!-- {url} -->\n[{desc}]({url}):\n\n{embed_text}\n'
 
     if 'comment' in form:
         text += f'''
@@ -279,10 +281,10 @@ def submit_entry():
     for field in ('entry-url', 'alternate-url'):
         url = form.get(field)
         if url:
-            embed_text, domain = generate_iframe(parse_url(url))
+            embed_text, domain, desc = generate_iframe(parse_url(url))
             if domain:
                 if domain not in domains:
-                    playlists.append((url, embed_text))
+                    playlists.append((url, embed_text, desc))
                     domains.add(domain)
                 else:
                     raise http_error.BadRequest(
