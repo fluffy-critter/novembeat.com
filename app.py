@@ -65,10 +65,10 @@ config = {
     'auth': {
         'AUTH_FORCE_HTTPS': not os.environ.get('FLASK_DEBUG'),
 
-        'SMTP_HOST': 'localhost',
-        'SMTP_PORT': 25,
-        'EMAIL_FROM': 'nobody@novembeat.com',
-        'EMAIL_SUBJECT': 'Sign in to novembeat.com',
+        # 'SMTP_HOST': 'localhost',
+        # 'SMTP_PORT': 25,
+        # 'EMAIL_FROM': 'nobody@novembeat.com',
+        # 'EMAIL_SUBJECT': 'Sign in to novembeat.com',
 
         'FEDIVERSE_NAME': 'novembeat',
         'FEDIVERSE_HOMEPAGE': 'https://novembeat.com/',
