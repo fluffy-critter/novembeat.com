@@ -84,18 +84,17 @@ config = {
     'auth_log_prune_age': 86400 * 90,
 }
 
-app = publ.Publ(__name__, config)
-app.config['GITHUB_WEBHOOK_ENDPOINT'] = '/_gh'
-app.config['GITHUB_WEBHOOK_SECRET'] = os.environ.get('GITHUB_SECRET')
-
 if not os.path.isfile('.sessionkey'):
     import uuid
     with open('.sessionkey', 'w', encoding='utf-8') as file:
         file.write(str(uuid.uuid4()))
     os.chmod('.sessionkey', 0o600)
 with open('.sessionkey', encoding='utf-8') as file:
-    app.secret_key = file.read()
+    config['secret_key'] = file.read()
 
+app = publ.Publ(__name__, config)
+app.config['GITHUB_WEBHOOK_ENDPOINT'] = '/_gh'
+app.config['GITHUB_WEBHOOK_SECRET'] = os.environ.get('GITHUB_SECRET')
 
 @app.route('/favicon.ico')
 def favicon():
