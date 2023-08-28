@@ -10,7 +10,7 @@ Sure! If you'd like me to add something, get in touch and I'll see what I can do
 * Use [the entry submission page](/submit)
 * Post a link to it as [an issue](https://github.com/fluffy-critter/novembeat.com/issues)
 * [Email me](mailto:fluffy-novembeat%40b%65esbuzz.biz)
-* Message me on [Mastodon](https://plush.city/@fluffy) or [Twitter](https://twitter.com/fluffy)
+* Message me on [Mastodon](https://plush.city/@fluffy) or [Cohost](https://cohost.org/fluffy)
 * Carrier pigeon
 
 Include the following information:
