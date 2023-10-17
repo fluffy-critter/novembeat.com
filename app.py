@@ -326,6 +326,7 @@ def send_admin_mail(entry_obj):
     from authl.handlers.email_addr import smtplib_connector, simple_sendmail
 
     if not os.environ.get('ADMIN_EMAIL'):
+        LOGGER.warning("Admin email is unset")
         return
 
     connector = smtplib_connector(
@@ -347,4 +348,7 @@ Entry: {entry_obj.link(absolute=True)}
 Filename: {entry_obj.file_path}
 ''')
 
+    LOGGER.info("Sending email to %s", os.environ.get('ADMIN_EMAIL'))
     send_func(msg)
+    LOGGER.info("Sent?")
+
