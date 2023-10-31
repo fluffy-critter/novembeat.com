@@ -157,24 +157,33 @@ def generate_iframe(parsed):
     # pylint:disable=line-too-long
     url = parsed.geturl()
 
+    output = BeautifulSoup(f'''<iframe frameborder="0" width="100%"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen seamless><a href="{url}">Play album</a></iframe>
+        <audio controls><a href="{url}">Play audio</a></audio>
+        <video controls><a href="{url}">Play video</a></video>''', 'html.parser')
+
     LOGGER.debug("Parsed URL: %s", parsed)
     if parsed.netloc.lower().endswith('youtube.com'):
         # YouTube supports opengraph but it strips out playlists :(
         # pylint:disable=invalid-name
         qs = urllib.parse.parse_qs(parsed.query)
         LOGGER.debug("Parsed query string: %s", qs)
+        output.iframe['width'] = 560
+        output.iframe['height'] = 315
         if 'list' in qs:
-            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list={qs['list'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
-                <a href="{url}">YouTube playlist</a>
-            </iframe>''', f"https://youtube.com/playlist?list={qs['list'][0]}", "YouTube playlist"
+            output.iframe['src'] = f"https://www.youtube.com/embed/videoseries?list={qs['list'][0]}"
+            output.iframe.a.replace_with = "YouTube playlist"
+            return output.iframe, f"https://youtube.com/playlist?list={qs['list'][0]}", "YouTube playlist"
         if 'v' in qs:
-            return f'''<iframe width="560" height="315" src="https://www.youtube.com/embed/{qs['v'][0]}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen seamless>
-                <a href="{url}">YouTube video</a>
-            </iframe>''', f"https://youtube.com/watch?v={qs['v'][0]}", "YouTube video"
+            output.iframe['src'] = f"https://www.youtube.com/embed/{qs['v'][0]}"
+            output.iframe.a.replace_with = "YouTube video"
+            return output.iframe, f"https://www.youtube.com/embed/{qs['v'][0]}", "YouTube video"
         raise http_error.BadRequest("Missing playlist or video ID")
 
     try:
-        req = requests.get(parsed.geturl(), timeout=3)
+        LOGGER.info("Retrieving %s", parsed.geturl())
+        req = requests.head(parsed.geturl(), timeout=3, allow_redirects=True)
         if req.status_code != 200:
             flask.abort(req.status_code)
     except IOError as error:
@@ -182,19 +191,47 @@ def generate_iframe(parsed):
             f"Unable to retrieve preview for {url}: {error}")
 
     if 'audio/' in req.headers['content-type']:
-        return f'''<audio src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc, "Audio file"
+        output.audio['src'] = url
+        output.audio['type'] = req.headers['content-type']
+        return output.audio, url, "Audio file"
     if 'video/' in req.headers['content-type']:
-        return f'''<video src="{url}" type="{req.headers['content-type']}" controls>''', url.netloc, "Video file"
+        output.video['src'] = url
+        output.video['type'] = req.headers['content-type']
+        return output.video, url, "Video file"
+
+    LOGGER.info("Parsing the page")
+    try:
+        LOGGER.info("Retrieving %s", parsed.geturl())
+        req = requests.get(parsed.geturl(), timeout=3, allow_redirects=True)
+        if req.status_code != 200:
+            flask.abort(req.status_code)
+    except IOError as error:
+        raise http_error.BadRequest(
+            f"Unable to retrieve preview for {url}: {error}")
 
     soup = BeautifulSoup(req.text, 'html.parser')
 
     def find_opengraph(*tags):
         for og_tag in tags:
-            node = soup.find('meta', {'property': og_tag, 'content': True})
-            if node:
+            if node := soup.find('meta', {'property': og_tag, 'content': True}):
                 return node['content']
 
-        return None, None, None
+        return None
+
+    title = find_opengraph('og:title') or soup.title.text or 'album'
+    LOGGER.info("Title: %s", title)
+
+    if soup.find('meta', {'name': 'itch:path', 'content': True}):
+        if node := soup.find('iframe', {'id': 'game_drop'}):
+            LOGGER.info("found itch.io game %s", node['src'])
+            if match := re.search('html/([0-9]*)-', node['src']):
+                itch_id = match.group(1)
+                LOGGER.info("itch_id %s", itch_id)
+                output.iframe['src'] = f'https://itch.io/embed-upload/{itch_id}?color=333333'
+                output.iframe['height'] = 480
+                output.iframe.a.replace_with = f'Play {title} on itch.io'
+                return output.iframe, url, f'{title}'
+        raise http_error.BadRequest("Itch game doesn't support embedding")
 
     vidurl = find_opengraph('og:video:secure_url',
                             'og:video', 'twitter:player')
@@ -203,7 +240,6 @@ def generate_iframe(parsed):
             'og:video:width', 'twitter:player:width') or '100%'
         height = find_opengraph(
             'og:video:height', 'twitter:player:height') or '150'
-        desc = find_opengraph('og:title') or "Playlist"
 
         if 'bandcamp.com' in vidurl:
             # bandcamp's player can be a lot better if we override the opengraph
@@ -212,9 +248,11 @@ def generate_iframe(parsed):
             if 'album=' in vidurl:
                 height = max(int(height), 400)
 
-        return (f'<iframe src="{vidurl}" width="{width}" height="{height}" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="{url}">{desc}</a></iframe>',
-                re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc),
-                desc)
+        output.iframe['src'] = vidurl
+        output.iframe['width'] = width
+        output.iframe['height'] = height
+        output.iframe.a.replace_with = title
+        return output.iframe, re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc), title
 
     raise http_error.UnsupportedMediaType(
         f"Don't know how to handle URL {url}")
