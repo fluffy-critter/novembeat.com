@@ -297,7 +297,10 @@ def submit_entry():
     if form.get('artist-url'):
         headers['Artist-URL'] = parse_url(form['artist-url']).geturl()
 
-    headers['Submitter'] = user.identity
+    if user.identity.startswith('mailto:'):
+        headers['Submitter'] = user.identity.replace('mailto:', '').replace('@', ' - AT - ').replace('.', ' - DOT - ')
+    else:
+        headers['Submitter'] = user.identity
 
     if 'admin' not in user.groups:
         headers['Auth'] = user.identity
