@@ -1,7 +1,7 @@
 Title: Ground
 Author: Ground
 Submitter: https://mastodon.scot/@Ground
-xAuth: https://mastodon.scot/@Ground
+Auth: https://mastodon.scot/@Ground
 Date: 2022-11-28 03:17:00-08:00
 Entry-ID: 54
 UUID: 198d1c83-dd00-51d0-abe3-11d78f718251
