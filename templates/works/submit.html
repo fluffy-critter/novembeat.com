@@ -46,7 +46,7 @@
 
 <p>Thank you for submitting a work to Novembeat! Please fill out the following form and we'll try to get it added as soon as possible.</p>
 
-{% if user.identity.startswith('mailto:') %}<p>Please note that while we value your privacy, submitting via email might expose your address via [the website files](https://github.com/fluffy-critter/novembeat). If this is a concern, please use an alternate login mechanism or a throwaway email address.</p>{% endif %}
+{% if user.identity.startswith('mailto:') %}<p>Please note that while we value your privacy, submitting via email might expose your address via <a href="https://github.com/fluffy-critter/novembeat">the website files</a>. If this is a concern, please use an alternate login mechanism or a throwaway email address.</p>{% endif %}
 
 <form method="POST" action="/_submit">
 
