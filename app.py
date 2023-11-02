@@ -356,6 +356,8 @@ def submit_entry():
 
     with orm.db_session():
         entry_record = publ.model.Entry.get(file_path=fullpath)
+        LOGGER.info("Sending admin email for %s", entry_obj)
+
         if entry_record:
             entry_obj = publ.entry.Entry.load(entry_record)
             send_admin_mail(entry_obj)
