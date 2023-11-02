@@ -355,15 +355,19 @@ def submit_entry():
         time.sleep(0.5)
     LOGGER.info("file %s scanned", filename)
 
-    with orm.db_session():
-        entry_record = publ.model.Entry.get(file_path=fullpath)
-        LOGGER.info("Sending admin email for %s", entry_obj)
+    try:
+        with orm.db_session():
+            entry_record = publ.model.Entry.get(file_path=fullpath)
+            LOGGER.info("Sending admin email for %s", entry_obj)
 
-        if entry_record:
-            entry_obj = publ.entry.Entry.load(entry_record)
-            send_admin_mail(entry_obj)
-            return flask.redirect(entry_obj.archive(paging='year'))
-        return flask.redirect(publ.category.Category.load('works').link(date=year))
+            if entry_record:
+                entry_obj = publ.entry.Entry.load(entry_record)
+                send_admin_mail(entry_obj)
+                return flask.redirect(entry_obj.archive(paging='year'))
+            return flask.redirect(publ.category.Category.load('works').link(date=year))
+    except Exception as error:
+        LOGGER.exception("Something weird happened")
+        return "Your submission is safe, but I had trouble sending an email to fluffy. Please let them know."
 
 
 def send_admin_mail(entry_obj):
