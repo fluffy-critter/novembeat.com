@@ -335,11 +335,10 @@ def submit_entry():
     body = get_entry_text(form, playlists)
 
     authorname = slugify.slugify(f'{user.humanize} {artistname}')
-    filename = os.path.join(
-        'works', f'{year}-{authorname}.md')
-    fullpath = os.path.join(APP_PATH, 'content', filename)
 
     # See https://github.com/PlaidWeb/Publ/issues/471 for a proposed better way to do this
+    filename = os.path.join('content', 'works', f'{year}-{authorname}.md')
+    fullpath = os.path.join(APP_PATH, filename)
     try:
         with atomicwrites.atomic_write(fullpath, overwrite=True) as outfile:
             for key, val in headers.items():
@@ -357,7 +356,7 @@ def submit_entry():
 
     try:
         with orm.db_session():
-            entry_record = publ.model.Entry.get(file_path=fullpath)
+            entry_record = publ.model.Entry.get(file_path=filename)
             LOGGER.info("Sending admin email for filename=%s fullpath=%s entry_record=%s", filename, fullpath, entry_record)
 
             if entry_record:
