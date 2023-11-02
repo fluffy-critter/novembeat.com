@@ -353,6 +353,7 @@ def submit_entry():
 
     while flask.current_app.indexer.in_progress:
         time.sleep(0.5)
+    LOGGER.info("file %s scanned", filename)
 
     with orm.db_session():
         entry_record = publ.model.Entry.get(file_path=fullpath)
