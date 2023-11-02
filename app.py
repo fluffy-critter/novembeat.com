@@ -363,6 +363,8 @@ def submit_entry():
                 entry_obj = publ.entry.Entry.load(entry_record)
                 send_admin_mail(entry_obj)
                 return flask.redirect(entry_obj.archive(paging='year'))
+
+            send_admin_mail(None)
             return flask.redirect(publ.category.Category.load('works').link(date=year))
     except Exception as error:
         LOGGER.exception("Something weird happened")
@@ -381,12 +383,13 @@ def send_admin_mail(entry_obj):
         port=25,
     )
     send_func = simple_sendmail(connector, 'submissions@novembeat.com',
-                                f"New Novembeat entry: {entry_obj.title}")
+                                f"New Novembeat entry: {entry_obj.title if entry_obj else '(missing)'}")
 
     msg = email.message.EmailMessage()
     msg['To'] = os.environ.get('ADMIN_EMAIL')
 
-    msg.set_content(f'''
+    if entry_obj:
+        msg.set_content(f'''
 The following entry was just submitted on novembeat.com:
 
 Artist: {entry_obj.get('Title')}
@@ -394,6 +397,8 @@ Year: {entry_obj.date.format('YYYY')}
 Entry: {entry_obj.link(absolute=True)}
 Filename: {entry_obj.file_path}
 ''')
+    else:
+        msg.set_content(f'''An entry was submitted, but the index query failed.''')
 
     LOGGER.info("Sending email to %s", os.environ.get('ADMIN_EMAIL'))
     send_func(msg)
