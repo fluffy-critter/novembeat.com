@@ -38,7 +38,7 @@ else:
                                 'logs/publ.log', when='D'),
                             logging.StreamHandler()
                         ],
-                        format="%(levelname)s:%(threadName)s:%(name)s:%(message)s")
+                        format="%(asctime)s %(levelname)s:%(threadName)s:%(name)s:%(message)s")
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.info("Setting up")
