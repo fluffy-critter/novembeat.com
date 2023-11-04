@@ -1,13 +1,13 @@
 Title: Ground
 Author: Ground
 Submitter: https://mastodon.scot/@Ground
-Auth: https://mastodon.scot/@Ground
-Date: 2022-11-28 03:17:00-08:00
+xAuth: https://mastodon.scot/@Ground
+Date: 2022-11-04 05:54:00-07:00
 Entry-ID: 54
-UUID: 198d1c83-dd00-51d0-abe3-11d78f718251
+UUID: afe8a4dd-8699-5b80-b81f-3700c54ff60f
 
-<!-- https://funkwhale.co.uk/library/albums/4172/ -->
-[Noisevember 2022](https://funkwhale.co.uk/library/albums/4172/):
+<!-- https://open.audio/library/albums/20534/ -->
+[Novembeat/Noisevember 2022](https://open.audio/library/albums/20534/):
 
-<iframe src="https://funkwhale.co.uk/front/embed.html?type=album&id=4172" width="600" height="400" allow="accelerometer; autoplay; picture-in-picture" seamless><a href="https://funkwhale.co.uk/library/albums/4172/">Noisevember 2022</a></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" height="400" seamless="" src="https://open.audio/front/embed.html?type=album&amp;id=20534" width="600"><a href="https://open.audio/library/albums/20534/">Play album</a></iframe>
 

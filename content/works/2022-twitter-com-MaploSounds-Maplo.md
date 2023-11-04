@@ -2,7 +2,7 @@ Title: Maplo
 Author: Maplo
 Artist-URL: https://www.youtube.com/channel/UClOHe1X60gp11AZSNypwohw
 Submitter: https://twitter.com/i/user/1113671772606484480
-Auth: https://twitter.com/i/user/1113671772606484480
+xAuth: https://twitter.com/i/user/1113671772606484480
 Date: 2022-01-03 20:11:52-08:00
 Entry-ID: 274
 UUID: 2cc76896-6ca4-53a9-a14f-9a3c3b10060e
