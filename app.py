@@ -262,7 +262,7 @@ def get_entry_text(form, playlists):
 
     text = ''
     for url, embed_text, desc in playlists:
-        text += f'<!-- {url} -->\n[{desc}]({url}):\n\n{embed_text}\n'
+        text += f'<!-- {url} -->\n[{desc}]({url}):\n\n{embed_text}\n\n'
 
     if 'comment' in form:
         text += f'''
