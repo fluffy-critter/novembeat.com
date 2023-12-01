@@ -9,7 +9,8 @@ UUID: a9822a18-195f-5bfd-b5dc-d295ab4313b9
 <!-- https://fluffy.itch.io/novembeat-2023 -->
 [Novembeat 2023: Pawmune and Friends by fluffy](https://fluffy.itch.io/novembeat-2023):
 
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" height="480" seamless="" src="https://itch.io/embed-upload/9123064?color=333333" width="100%"><a href="https://fluffy.itch.io/novembeat-2023">Play album</a></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" height="360" seamless="" src="https://itch.io/embed-upload/9123064?color=333333" width="100%"><a href="https://fluffy.itch.io/novembeat-2023">Play album</a></iframe>
+
 <!-- https://sockpuppet.bandcamp.com/album/novembeat-2023-pawmune-and-friends -->
 [Novembeat 2023: Pawmune And Friends, by Sockpuppet](https://sockpuppet.bandcamp.com/album/novembeat-2023-pawmune-and-friends):
 
