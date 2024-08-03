@@ -10,3 +10,4 @@ __pycache__/
 flask_profiler.sql
 static/temp/
 .sessionkey
+*.afdesign~lock~
