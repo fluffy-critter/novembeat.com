@@ -129,6 +129,11 @@ def deploy(data):
 
     return flask.Response(result, mimetype='text/plain')
 
+@app.path_alias_regex(r'/\.well-known/(host-meta|webfinger).*')
+def redirect_bridgy(match):
+    ''' support ActivityPub via fed.brid.gy '''
+    return 'https://fed.brid.gy' + flask.request.full_path, False
+
 
 def parse_url(url):
     if '//' not in url:
