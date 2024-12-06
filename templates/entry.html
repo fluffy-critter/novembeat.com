@@ -74,6 +74,7 @@
                 {% block heading %}
                 <div class="top-hook"></div>
                 <h2><a href="{{entry.link}}" class="u-url p-name">{{'🔏 ' if entry.private else ''}}{{entry.title}}</a></h2>
+                <data class="p-uid" value="{{entry.uuid}}"></data>
                 <div class="posted">
                     <time class="dt-published" datetime="{{entry.date.isoformat()}}">
                         <span class="date">{{entry.date.format('YYYY/MM/DD')}}</span>
