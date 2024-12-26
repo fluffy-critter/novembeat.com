@@ -6,11 +6,11 @@ authors = ["fluffy <fluffy@beesbuzz.biz>"]
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = ">=3.9,<3.13"
 gunicorn = "^22.0.0"
 Pushl = "^0.3.0"
 python-memcached = "^1.59"
-publ = {version="^0.7.2", extras=["auth"]}
+publ = {version="^0.7.33", extras=["auth"]}
 requests = "^2.32.0"
 flask-github-webhook = "^0.2.0"
 
