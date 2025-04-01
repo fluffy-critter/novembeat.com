@@ -17,5 +17,5 @@ This project was started in 2016 by [Paul Starr](https://pauls.adequate.website/
 >
 > &mdash; Paul Starr (@pts), November 1, 2016
 
-Since 2017 the initiative has mostly been run by [fluffy](https://beesbuzz.biz/), who also runs this website. For more of fluffy's music, check out [Sockpuppet](https://sockpuppet.us/) and [itch.io](https://fluffy.itch.io/).
+Since 2017 the initiative has mostly been run by [fluffy](https://beesbuzz.biz/), who also runs this website. For more of fluffy's music, check out [Sockpuppet](https://sockpuppet.band/) and [itch.io](https://fluffy.itch.io/).
 
