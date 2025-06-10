@@ -10,7 +10,7 @@ python = ">=3.9,<3.13"
 Pushl = "^0.3.0"
 python-memcached = "^1.59"
 publ = {version="^0.7.33", extras=["auth"]}
-requests = "^2.32.0"
+requests = "^2.32.4"
 flask-github-webhook = "^0.2.0"
 hypercorn = "^0.17.3"
 
