@@ -3,6 +3,9 @@ Author: BackspinZX
 Artist-URL: https://backspinzx.bandcamp.com/
 Submitter: backspinzx
 Date: 2025-12-04 21:39:04-08:00
+UUID: 395de848-fff3-41a9-9ff3-a7c7cf9353c2
+Entry-ID: 428
+
 
 <!-- https://backspinzx.bandcamp.com/album/novembeat-2025 -->
 [Novembeat 2025, by BackspinZX](https://backspinzx.bandcamp.com/album/novembeat-2025):
