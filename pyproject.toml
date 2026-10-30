@@ -17,7 +17,7 @@ hypercorn = "^0.17.3"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.0"
-pylint = "^2.15.5"
+pylint = ">=2.15.5,<5.0.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
