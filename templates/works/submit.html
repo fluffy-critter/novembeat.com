@@ -62,7 +62,7 @@
 
     <p><label for="year">Submission year:</label>
         <select id="year" name="year">
-            {% if arrow.get().month >= 11 %}
+            {% if arrow.get().shift(hours=12).month >= 11 %}
             <option value="{{arrow.get().year}}" selected>{{arrow.get().year}}</option>
             {% endif %}
             {% for year in range(arrow.get().year - 1, 2015, -1) %}
