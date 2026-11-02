@@ -178,11 +178,9 @@ def generate_iframe(parsed):
         output.iframe['height'] = 315
         if 'list' in qs:
             output.iframe['src'] = f"https://www.youtube.com/embed/videoseries?list={qs['list'][0]}"
-            output.iframe.a.replace_with = "YouTube playlist"
             return output.iframe, f"https://youtube.com/playlist?list={qs['list'][0]}", "YouTube playlist"
         if 'v' in qs:
             output.iframe['src'] = f"https://www.youtube.com/embed/{qs['v'][0]}"
-            output.iframe.a.replace_with = "YouTube video"
             return output.iframe, f"https://www.youtube.com/embed/{qs['v'][0]}", "YouTube video"
         raise http_error.BadRequest("Missing playlist or video ID")
 
@@ -316,7 +314,7 @@ def submit_entry():
         raise http_error.BadRequest(f"Novembeat wasn't happening in {year}")
     if year < date.year:
         date = date.replace(year=year)
-    elif (year, 11) > (date.year, date.month):
+    elif (year, 10, 31) > (date.year, date.month, date.day):
         raise http_error.BadRequest(f'November {year} is in the future')
 
     headers['Date'] = date.format()
