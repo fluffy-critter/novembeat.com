@@ -254,7 +254,6 @@ def generate_iframe(parsed):
         output.iframe['src'] = vidurl
         output.iframe['width'] = width
         output.iframe['height'] = height
-        output.iframe.a.replace_with = title
         return output.iframe, re.sub('^www.', '', urllib.parse.urlparse(vidurl).netloc), title
 
     raise http_error.UnsupportedMediaType(
